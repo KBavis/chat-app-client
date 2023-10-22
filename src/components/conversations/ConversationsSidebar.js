@@ -5,7 +5,7 @@ import Conversations from "./Conversations";
 
 const ConversationsSidebar = () => {
    return (
-      <div className="m-auto pt-10">
+      <div className="m-auto pt-10 min-h-screen">
          <ProfileBrief />
          <SearchConversation />
          <Conversations />

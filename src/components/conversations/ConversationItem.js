@@ -39,25 +39,13 @@ const ConversationItem = ({ conversation }) => {
       /* @TODO Update The Profile Image Shown Based On Most Recent Sent Messge 
          i.e Whichever user sends most recent message, make it their image
 
-         @TODO Make it so instead of just listing the recent sender of the message, 
-         you list all Conversation Users Except Current Authenticated User 
-         (no need to list yourself in a Conversation)
-
-         @TODO Make it so when you hover a Conversation, it will make it the some sort of transition 
-         such as making the text/img bigger or something like that
-
-         @TODO Make it so when you click on a Conversation, it will update the Conversation Context and 
-         set the Current Conversation to the Conversation that you selected
-
-         @TODO Add Filtering Capabilities
-
       */
    }
 
    return (
       <div
          onClick={onClick}
-         className="w-full flex mt-8 py-2 hover:cursor-pointer hover:scale-105 hover:bg-slate-200"
+         className="w-full flex mt-6 py-2 hover:cursor-pointer hover:scale-105 hover:bg-slate-200"
       >
          <div className="flex items-center mr-6">
             <img
@@ -81,7 +69,7 @@ const ConversationItem = ({ conversation }) => {
                      {recentMessage.content}
                   </p>
                </div>
-               <p className="text-gray-400 text-xs transition-transform duration-1000 ease-in">
+               <p className="text-gray-600 text-xs transition-transform duration-1000 ease-in">
                   {recentMessage.sendDate.toLocaleTimeString()}
                </p>
             </div>

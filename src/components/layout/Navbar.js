@@ -27,9 +27,25 @@ const Navbar = () => {
             <li>
                <Link
                   className="transition-opacity ease-in hover:opacity-80"
-                  to="profile"
+                  to="/profile"
                >
                   Profile
+               </Link>
+            </li>
+            <li>
+               <Link
+                  className="transition-opacity ease-in hover:opacity-80"
+                  to="/register"
+               >
+                  Register
+               </Link>
+            </li>
+            <li>
+               <Link
+                  className="transition-opacity ease-in hover:opacity-80"
+                  to="/login"
+               >
+                  Login
                </Link>
             </li>
          </ul>
