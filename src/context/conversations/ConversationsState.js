@@ -5,12 +5,37 @@ import React from "react";
 import one from "../../images/1.jpg";
 import two from "../../images/2.jpg";
 import three from "../../images/3.jpg";
+import {
+   CLEAR_CURRENT,
+   CLEAR_FILTER,
+   FILTER_CONVERSATIONS,
+   SET_CURRENT,
+} from "./types";
+import { UNSAFE_DataRouterStateContext } from "react-router-dom";
 const ConversationsState = (props) => {
+   //@TODO Add property 'image' to the conversation.users object, and set this image to be conversation image based on sender of recent message
    const initalState = {
       conversations: [
          {
             id: 1,
-            users: ["Sam Smith", "Jeremy Grant", "Shadow Knight"],
+            users: [
+               {
+                  id: 1,
+                  name: "Sam Smith",
+               },
+               {
+                  id: 2,
+                  name: "Jeremy Grant",
+               },
+               {
+                  id: 3,
+                  name: "Shadown Knight",
+               },
+               {
+                  id: 4,
+                  name: "Kellen Bavis",
+               },
+            ],
             recentMessage: {
                content: "How are you guys doing?",
                sendDate: new Date(),
@@ -20,7 +45,20 @@ const ConversationsState = (props) => {
          },
          {
             id: 2,
-            users: ["Freddie Tuck", "Skip Baily"],
+            users: [
+               {
+                  id: 5,
+                  name: "Freddie Tuck",
+               },
+               {
+                  id: 6,
+                  name: "Skip Baily",
+               },
+               {
+                  id: 4,
+                  name: "Kellen Bavis",
+               },
+            ],
             recentMessage: {
                content: "I wont be there until 3PM.",
                sendDate: new Date(),
@@ -30,7 +68,16 @@ const ConversationsState = (props) => {
          },
          {
             id: 3,
-            users: ["Ericka Vacaflores", "Kellen Bavis"],
+            users: [
+               {
+                  name: "Ericka Vacaflores",
+                  id: 7,
+               },
+               {
+                  name: "Kellen Bavis",
+                  id: 4,
+               },
+            ],
             recentMessage: {
                content: "I don't know if I will make it!",
                sendDate: new Date(),
@@ -50,14 +97,26 @@ const ConversationsState = (props) => {
    //Delete/Leave Conversation
 
    //Set Current Conversation
+   const setCurrent = (conversation) => {
+      dispatch({ type: SET_CURRENT, payload: conversation });
+   };
 
    //Clear Current Conversation
+   const clearCurrent = () => {
+      dispatch({ type: CLEAR_CURRENT });
+   };
 
    //Update Conversation
 
    //Filter Conversations
+   const filterConversations = (text) => {
+      dispatch({ type: FILTER_CONVERSATIONS, payload: text });
+   };
 
    //Clear Filter
+   const clearFilter = () => {
+      dispatch({ type: CLEAR_FILTER });
+   };
 
    return (
       <ConversationsContext.Provider
@@ -65,6 +124,10 @@ const ConversationsState = (props) => {
             conversations: state.conversations,
             current: state.current,
             filtered: state.filtered,
+            filterConversations,
+            clearFilter,
+            setCurrent,
+            clearCurrent,
          }}
       >
          {props.children};

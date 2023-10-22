@@ -25,6 +25,7 @@ const AuthState = (props) => {
       loading: true,
       error: null,
       user: {
+         id: 4,
          profileImage: img,
          name: "Kellen Bavis",
          conversations: null,

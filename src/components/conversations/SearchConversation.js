@@ -2,7 +2,7 @@ import React, { useContext, useRef, useState } from "react";
 import ConversationContext from "../../context/conversations/conversationContext";
 
 const SearchConversation = () => {
-   const { filtered } = useContext(ConversationContext);
+   const { filterConversations, clearFilter } = useContext(ConversationContext);
    const [inputValue, setInputValue] = useState("");
 
    const onChange = (e) => {
@@ -10,9 +10,9 @@ const SearchConversation = () => {
       setInputValue(value);
 
       if (value !== "") {
-         //@TODO Filter Conversations
+         filterConversations(inputValue);
       } else {
-         //@TODO Clear Filter
+         clearFilter();
       }
    };
 
