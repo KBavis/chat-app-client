@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import ConversationsContext from "../../context/conversations/conversationContext";
-import AuthContext from "../../context/auth/authContext";
+import ConversationsContext from "../../../context/conversations/conversationContext";
+import AuthContext from "../../../context/auth/authContext";
 
 const ConversationItem = ({ conversation }) => {
    const { deleteConversation, setCurrent, clearCurrent } =

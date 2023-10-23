@@ -1,7 +1,7 @@
 import React, { useContext, useRef, useState } from "react";
-import ConversationContext from "../../context/conversations/conversationContext";
+import ConversationContext from "../../../context/conversations/conversationContext";
 
-const SearchConversation = () => {
+const FilterConversations = () => {
    const { filterConversations, clearFilter } = useContext(ConversationContext);
    const [inputValue, setInputValue] = useState("");
 
@@ -32,4 +32,4 @@ const SearchConversation = () => {
    );
 };
 
-export default SearchConversation;
+export default FilterConversations;

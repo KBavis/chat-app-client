@@ -1,5 +1,5 @@
 import React, { Fragment, useContext } from "react";
-import ConversationsContext from "../../context/conversations/conversationContext";
+import ConversationsContext from "../../../context/conversations/conversationContext";
 import ConversationItem from "./ConversationItem";
 
 const Conversation = () => {

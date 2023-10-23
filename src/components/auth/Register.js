@@ -8,6 +8,8 @@ const Register = () => {
       password2: "",
    });
 
+   //@TODO Add OnSubmit to request Registration to REST API
+
    const { name, password, password2 } = user;
 
    const onChange = (e) => {
