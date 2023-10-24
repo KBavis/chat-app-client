@@ -69,6 +69,7 @@ const ConversationItem = ({ conversation }) => {
                      {recentMessage.content}
                   </p>
                </div>
+               {/* @TODO Consider Using a React Moment To Format Date AND Time */}
                <p className="text-gray-600 text-xs transition-transform duration-1000 ease-in">
                   {recentMessage.sendDate.toLocaleTimeString()}
                </p>
