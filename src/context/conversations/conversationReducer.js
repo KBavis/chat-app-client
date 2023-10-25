@@ -1,8 +1,11 @@
+import { act } from "react-dom/test-utils";
 import {
    CLEAR_FILTER,
    FILTER_CONVERSATIONS,
    SET_CURRENT,
    CLEAR_CURRENT,
+   ADD_CONVERSATION,
+   SET_LOADING,
 } from "./types";
 
 export default (state, action) => {
@@ -22,6 +25,12 @@ export default (state, action) => {
                return false;
             }),
          };
+      case ADD_CONVERSATION:
+         return {
+            ...state,
+            conversations: [...state.conversations, action.payload],
+            loading: false,
+         };
       case CLEAR_FILTER:
          return {
             ...state,
@@ -36,6 +45,11 @@ export default (state, action) => {
          return {
             ...state,
             current: null,
+         };
+      case SET_LOADING:
+         return {
+            ...state,
+            loading: true,
          };
    }
 };

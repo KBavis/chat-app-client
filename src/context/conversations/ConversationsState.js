@@ -11,7 +11,6 @@ import {
    FILTER_CONVERSATIONS,
    SET_CURRENT,
 } from "./types";
-import { UNSAFE_DataRouterStateContext } from "react-router-dom";
 const ConversationsState = (props) => {
    //@TODO Add property 'image' to the conversation.users object, and set this image to be conversation image based on sender of recent message
    const initalState = {
@@ -88,6 +87,7 @@ const ConversationsState = (props) => {
       ],
       current: null,
       filtered: null,
+      loading: false,
    };
 
    const [state, dispatch] = useReducer(conversationReducer, initalState);
