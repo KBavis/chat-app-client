@@ -5,86 +5,23 @@ import React from "react";
 import one from "../../images/1.jpg";
 import two from "../../images/2.jpg";
 import three from "../../images/3.jpg";
+import axios from "axios";
+import setAuthToken from "../../utils/setAuthToken";
+
 import {
    CLEAR_CURRENT,
    CLEAR_FILTER,
    FILTER_CONVERSATIONS,
    SET_CURRENT,
+   GET_USER_CONVERSATIONS,
+   SET_LOADING,
+   CONVERSATION_ERROR,
+   CLEAR_CONVERSATIONS,
 } from "./types";
 const ConversationsState = (props) => {
    //@TODO Add property 'image' to the conversation.users object, and set this image to be conversation image based on sender of recent message
    const initalState = {
-      conversations: [
-         {
-            id: 1,
-            users: [
-               {
-                  id: 1,
-                  name: "Sam Smith",
-               },
-               {
-                  id: 2,
-                  name: "Jeremy Grant",
-               },
-               {
-                  id: 3,
-                  name: "Shadown Knight",
-               },
-               {
-                  id: 4,
-                  name: "Kellen Bavis",
-               },
-            ],
-            recentMessage: {
-               content: "How are you guys doing?",
-               sendDate: new Date(),
-               sender: "Sam Smith",
-            },
-            image: one,
-         },
-         {
-            id: 2,
-            users: [
-               {
-                  id: 5,
-                  name: "Freddie Tuck",
-               },
-               {
-                  id: 6,
-                  name: "Skip Baily",
-               },
-               {
-                  id: 4,
-                  name: "Kellen Bavis",
-               },
-            ],
-            recentMessage: {
-               content: "I wont be there until 3PM.",
-               sendDate: new Date(),
-               sender: "Freddie Tuck",
-            },
-            image: two,
-         },
-         {
-            id: 3,
-            users: [
-               {
-                  name: "Ericka Vacaflores",
-                  id: 7,
-               },
-               {
-                  name: "Kellen Bavis",
-                  id: 4,
-               },
-            ],
-            recentMessage: {
-               content: "I don't know if I will make it!",
-               sendDate: new Date(),
-               sender: "Ericka Vacaflores",
-            },
-            image: three,
-         },
-      ],
+      conversations: null,
       current: null,
       filtered: null,
       loading: false,
@@ -95,6 +32,36 @@ const ConversationsState = (props) => {
    //Add Conversation
 
    //Delete/Leave Conversation
+
+   //Get Conversations
+   const getUserConversations = async () => {
+      try {
+         if (localStorage.token) {
+            setAuthToken(localStorage.token);
+         }
+         const res = await axios.get("/userConversations");
+         console.log(res.data._embedded);
+
+         if (res.data._embedded) {
+            console.log(res.data._embedded.conversationResponseDTOes);
+            dispatch({
+               type: GET_USER_CONVERSATIONS,
+               payload: res.data._embedded.conversationResponseDTOes,
+            });
+         } else {
+            dispatch({
+               type: GET_USER_CONVERSATIONS,
+               payload: null,
+            });
+         }
+      } catch (err) {
+         console.error(err);
+         dispatch({
+            type: CONVERSATION_ERROR,
+            payload: err.response,
+         });
+      }
+   };
 
    //Set Current Conversation
    const setCurrent = (conversation) => {
@@ -118,16 +85,31 @@ const ConversationsState = (props) => {
       dispatch({ type: CLEAR_FILTER });
    };
 
+   //Set Loading
+   const setLoading = () => {
+      dispatch({ type: SET_LOADING });
+   };
+
+   //Clear Conversations
+   const clearConversations = () => {
+      dispatch({ type: CLEAR_CONVERSATIONS });
+   };
+
    return (
       <ConversationsContext.Provider
          value={{
+            //state
             conversations: state.conversations,
             current: state.current,
             filtered: state.filtered,
+            //functions
             filterConversations,
             clearFilter,
             setCurrent,
             clearCurrent,
+            setLoading,
+            getUserConversations,
+            clearConversations,
          }}
       >
          {props.children};

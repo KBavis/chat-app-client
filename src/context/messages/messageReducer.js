@@ -3,6 +3,7 @@ import {
    FILTER_MESSAGES,
    DELETE_MESSAGE,
    GET_MESSAGES,
+   CLEAR_MESSAGES,
 } from "./types";
 
 export default (state, action) => {
@@ -16,6 +17,13 @@ export default (state, action) => {
          return {
             ...state,
             messages: action.payload,
+         };
+      case CLEAR_MESSAGES:
+         return {
+            ...state,
+            filtered: null,
+            current: null,
+            messages: null,
          };
    }
 };

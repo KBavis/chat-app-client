@@ -1,10 +1,24 @@
-import React, { Fragment, useContext } from "react";
+import React, { Fragment, useContext, useEffect } from "react";
 import ConversationsContext from "../../../context/conversations/conversationContext";
 import ConversationItem from "./ConversationItem";
+import AuthContext from "../../../context/auth/authContext";
+import Loading from "../../layout/Loading";
 
 const Conversation = () => {
-   const { filtered, conversations } = useContext(ConversationsContext);
-   return (
+   const { filtered, conversations, loading, setLoading } =
+      useContext(ConversationsContext);
+
+   const { user } = useContext(AuthContext);
+
+   useEffect(() => {
+      setLoading();
+   }, []);
+
+   if (conversations === null) return <h1>Please Add A Conversation</h1>;
+
+   return loading ? (
+      <Loading />
+   ) : (
       <div>
          <Fragment>
             {filtered !== null
@@ -14,7 +28,7 @@ const Conversation = () => {
                        conversation={conversation}
                     />
                  ))
-               : conversations.map((conversation) => (
+               : conversations?.map((conversation) => (
                     <ConversationItem
                        key={conversation.id}
                        conversation={conversation}

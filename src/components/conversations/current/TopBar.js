@@ -48,7 +48,7 @@ const TopBar = () => {
             <div className="text-3xl mr-5">
                <i
                   onClick={onClick}
-                  class="fa-solid fa-ellipsis cursor-pointer text-slate-800 hover:scale-105"
+                  className="fa-solid fa-ellipsis cursor-pointer text-slate-800 hover:scale-105"
                ></i>
             </div>
          </div>

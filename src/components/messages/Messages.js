@@ -34,7 +34,7 @@ const Messages = () => {
 
    //@TODO: Based on Current Conversation, Fetch Messages From That Conversation
    useEffect(() => {}, [current]);
-   return (
+   return user ? (
       // Flex Flex-Col Ensures That The Input/Send Message Is BELOW The Messages
       <div className="flex flex-col h-screen mt-5">
          {/*Flex Grow Causes The Div To Grow Vertically To Fill*/}
@@ -67,6 +67,8 @@ const Messages = () => {
             </button>
          </div>
       </div>
+   ) : (
+      "Please Sign In"
    );
 };
 

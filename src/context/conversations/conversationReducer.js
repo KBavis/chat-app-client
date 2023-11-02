@@ -6,6 +6,8 @@ import {
    CLEAR_CURRENT,
    ADD_CONVERSATION,
    SET_LOADING,
+   GET_USER_CONVERSATIONS,
+   CLEAR_CONVERSATIONS,
 } from "./types";
 
 export default (state, action) => {
@@ -31,6 +33,12 @@ export default (state, action) => {
             conversations: [...state.conversations, action.payload],
             loading: false,
          };
+      case GET_USER_CONVERSATIONS:
+         return {
+            ...state,
+            conversations: action.payload,
+            loading: false,
+         };
       case CLEAR_FILTER:
          return {
             ...state,
@@ -50,6 +58,13 @@ export default (state, action) => {
          return {
             ...state,
             loading: true,
+         };
+      case CLEAR_CONVERSATIONS:
+         return {
+            ...state,
+            conversations: null,
+            current: null,
+            filtered: null,
          };
    }
 };

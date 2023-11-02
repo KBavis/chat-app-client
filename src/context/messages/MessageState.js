@@ -1,41 +1,47 @@
-import { useContext, useReducer } from "react";
+import { useReducer } from "react";
 import messageReducer from "./messageReducer";
 import MessageContext from "./messageContext";
-import { SEND_MESSAGE, DELETE_MESSAGE, FILTER_MESSAGES } from "./types";
+import {
+   SEND_MESSAGE,
+   DELETE_MESSAGE,
+   FILTER_MESSAGES,
+   CLEAR_MESSAGES,
+} from "./types";
 import { DELETE_CONVERSATION } from "../conversations/types";
 
 const MessageState = (props) => {
    //@TODO: Consider Making a SentMessages and Recieved Messages as apart of state
    const initalState = {
-      messages: [
-         {
-            id: 1,
-            sender: {
-               id: 1,
-               name: "Sam Smith",
-            },
-            content: "I'll have to see if I can make it!",
-            sendDate: new Date(),
-         },
-         {
-            id: 2,
-            sender: {
-               id: 2,
-               name: "Jeremy Grant",
-            },
-            content: "Maybe, I have soccer practice that day!",
-            sendDate: new Date(),
-         },
-         {
-            id: 3,
-            sender: {
-               id: 4,
-               name: "Kellen Bavis",
-            },
-            content: "I'll be there!",
-            sendDate: new Date(),
-         },
-      ],
+      // messages: [
+      //    {
+      //       id: 1,
+      //       sender: {
+      //          id: 1,
+      //          name: "Sam Smith",
+      //       },
+      //       content: "I'll have to see if I can make it!",
+      //       sendDate: new Date(),
+      //    },
+      //    {
+      //       id: 2,
+      //       sender: {
+      //          id: 2,
+      //          name: "Jeremy Grant",
+      //       },
+      //       content: "Maybe, I have soccer practice that day!",
+      //       sendDate: new Date(),
+      //    },
+      //    {
+      //       id: 3,
+      //       sender: {
+      //          id: 4,
+      //          name: "Kellen Bavis",
+      //       },
+      //       content: "I'll be there!",
+      //       sendDate: new Date(),
+      //    },
+      // ],
+      messages: null,
       loading: false,
       filtered: null,
    };
@@ -67,6 +73,11 @@ const MessageState = (props) => {
 
    //Clear Curent
 
+   //Clear Messages
+   const clearMessages = () => {
+      dispatch({ type: CLEAR_MESSAGES });
+   };
+
    return (
       <MessageContext.Provider
          value={{
@@ -77,6 +88,7 @@ const MessageState = (props) => {
             //Functions
             getMessages,
             sendMessage,
+            clearMessages,
          }}
       >
          {props.children}
