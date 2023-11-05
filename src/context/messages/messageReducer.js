@@ -4,6 +4,8 @@ import {
    DELETE_MESSAGE,
    GET_MESSAGES,
    CLEAR_MESSAGES,
+   MESSAGE_ERROR,
+   SET_LOADING,
 } from "./types";
 
 export default (state, action) => {
@@ -17,6 +19,7 @@ export default (state, action) => {
          return {
             ...state,
             messages: action.payload,
+            loading: false,
          };
       case CLEAR_MESSAGES:
          return {
@@ -25,5 +28,17 @@ export default (state, action) => {
             current: null,
             messages: null,
          };
+      case MESSAGE_ERROR:
+         return {
+            ...state,
+            error: action.payload,
+         };
+      case SET_LOADING:
+         return {
+            ...state,
+            loading: true,
+         };
+      default:
+         return state;
    }
 };

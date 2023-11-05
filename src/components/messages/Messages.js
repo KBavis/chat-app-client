@@ -2,41 +2,55 @@ import { useContext, useEffect, useState } from "react";
 import ChatMessage from "./ChatMessage";
 import MessageContext from "../../context/messages/messageContext";
 import AuthContext from "../../context/auth/authContext";
+import ConversationsContext from "../../context/conversations/conversationContext";
+import Loading from "../layout/Loading";
 
 const Messages = () => {
-   const { messages, filtered, current, sendMessage } =
-      useContext(MessageContext);
+   const {
+      messages,
+      filtered,
+      current,
+      sendMessage,
+      getMessages,
+      setLoading,
+      loading,
+   } = useContext(MessageContext);
    const { user } = useContext(AuthContext);
+   const conversationContext = useContext(ConversationsContext);
    const [text, setText] = useState("");
 
    const onChange = (e) => {
       setText(e.target.value);
    };
 
-   //@TODO: Interact With Rest API
    const onSubmit = (e) => {
+      console.log("Send Message Clicked");
       e.preventDefault();
       if (text === "") {
          //@TODO Configure An Alert To Inform User
       }
       const newMessage = {
-         id: Math.random() * 1000 + 1,
          content: text,
-         sender: {
-            id: user.id,
-            name: user.name,
-         },
-         sendDate: new Date(),
       };
-      sendMessage(newMessage);
+      if (conversationContext.current)
+         sendMessage(newMessage, conversationContext.current.conversation_id);
       setText("");
    };
 
    //@TODO: Based on Current Conversation, Fetch Messages From That Conversation
-   useEffect(() => {}, [current]);
+   useEffect(() => {
+      if (conversationContext.current) {
+         setLoading();
+         getMessages(conversationContext.current.conversation_id);
+      }
+   }, [conversationContext.current]);
+
+   if (loading == true) {
+      return <Loading></Loading>;
+   }
    return user ? (
       // Flex Flex-Col Ensures That The Input/Send Message Is BELOW The Messages
-      <div className="flex flex-col h-screen mt-5">
+      <div className="flex flex-col h-[85vh] mt-5">
          {/*Flex Grow Causes The Div To Grow Vertically To Fill*/}
          <div className="flex-grow p-4 border">
             {/* Flex Col Causes The Messages To Descend Vertically */}
@@ -44,9 +58,9 @@ const Messages = () => {
                {messages !== null &&
                   messages.map((message) => (
                      <ChatMessage
-                        key={message.id}
+                        key={message.message_id}
                         text={message.content}
-                        sentByUser={user.id === message.sender.id}
+                        sentByUser={user.user_id === message.sender.user_id}
                      />
                   ))}
             </div>

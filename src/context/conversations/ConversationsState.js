@@ -17,6 +17,7 @@ import {
    SET_LOADING,
    CONVERSATION_ERROR,
    CLEAR_CONVERSATIONS,
+   LEAVE_CONVERSATION,
 } from "./types";
 const ConversationsState = (props) => {
    //@TODO Add property 'image' to the conversation.users object, and set this image to be conversation image based on sender of recent message
@@ -32,6 +33,24 @@ const ConversationsState = (props) => {
    //Add Conversation
 
    //Delete/Leave Conversation
+   const leaveConversation = async (id) => {
+      try {
+         if (localStorage.token) {
+            setAuthToken(localStorage.token);
+         }
+         await axios.delete(`/conversation/leave/${id}`);
+         dispatch({
+            type: LEAVE_CONVERSATION,
+            payload: id,
+         });
+      } catch (err) {
+         console.error(err);
+         dispatch({
+            type: CONVERSATION_ERROR,
+            payload: err.response,
+         });
+      }
+   };
 
    //Get Conversations
    const getUserConversations = async () => {
@@ -40,20 +59,13 @@ const ConversationsState = (props) => {
             setAuthToken(localStorage.token);
          }
          const res = await axios.get("/userConversations");
-         console.log(res.data._embedded);
-
-         if (res.data._embedded) {
-            console.log(res.data._embedded.conversationResponseDTOes);
-            dispatch({
-               type: GET_USER_CONVERSATIONS,
-               payload: res.data._embedded.conversationResponseDTOes,
-            });
-         } else {
-            dispatch({
-               type: GET_USER_CONVERSATIONS,
-               payload: null,
-            });
-         }
+         const payloadData = res.data._embedded
+            ? res.data._embedded.conversationResponseDTOes
+            : null;
+         dispatch({
+            type: GET_USER_CONVERSATIONS,
+            payload: payloadData,
+         });
       } catch (err) {
          console.error(err);
          dispatch({
@@ -110,6 +122,7 @@ const ConversationsState = (props) => {
             setLoading,
             getUserConversations,
             clearConversations,
+            leaveConversation,
          }}
       >
          {props.children};

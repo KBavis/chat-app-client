@@ -8,7 +8,12 @@ const ProfileBrief = (props) => {
       */
    }
    const { user } = useContext(AuthContext);
-   const { firstName, lastName, userName, image } = user;
+
+   let firstName, lastName, userName, image;
+
+   if (user) {
+      ({ firstName, lastName, userName, image } = user);
+   }
    const [currImage, setCurrImage] = useState("");
 
    useEffect(() => {
@@ -18,6 +23,7 @@ const ProfileBrief = (props) => {
          setCurrImage(image);
       }
    }, []);
+
    return user ? (
       <div className="flex space-x-6">
          {currImage && (

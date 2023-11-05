@@ -8,6 +8,8 @@ import {
    SET_LOADING,
    GET_USER_CONVERSATIONS,
    CLEAR_CONVERSATIONS,
+   CONVERSATION_ERROR,
+   LEAVE_CONVERSATION,
 } from "./types";
 
 export default (state, action) => {
@@ -20,12 +22,25 @@ export default (state, action) => {
                const regex = new RegExp(`${action.payload}`, "gi");
                // Filter Based On Users In Convo
                for (let i = 0; i < convo.users.length; i++) {
-                  if (convo.users[i].name.match(regex)) {
+                  if (
+                     convo.users[i].firstName.match(regex) ||
+                     convo.users[i].lastName.match(regex)
+                  ) {
                      return true;
                   }
                }
                return false;
             }),
+         };
+      case LEAVE_CONVERSATION:
+         return {
+            ...state,
+            conversations: state.conversations.filter(
+               (convo) => convo.id !== action.payload
+            ),
+            filtered: null,
+            loading: false,
+            current: null,
          };
       case ADD_CONVERSATION:
          return {
@@ -66,5 +81,12 @@ export default (state, action) => {
             current: null,
             filtered: null,
          };
+      case CONVERSATION_ERROR:
+         return {
+            ...state,
+            error: action.payload,
+         };
+      default:
+         return state;
    }
 };

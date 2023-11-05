@@ -4,7 +4,7 @@ import AuthContext from "../../../context/auth/authContext";
 import img from "../../../images/1.jpg";
 
 const ConversationItem = ({ conversation }) => {
-   const { deleteConversation, setCurrent, clearCurrent } =
+   const { deleteConversation, setCurrent, clearCurrent, current } =
       useContext(ConversationsContext);
 
    const { user } = useContext(AuthContext);
@@ -28,17 +28,19 @@ const ConversationItem = ({ conversation }) => {
    //Remove Current Authenticated User From List of Users In Conversations
    useEffect(() => {
       //Set Conversation Users
-      var convoUsers = users?.filter(
-         (currUser) => currUser.user_id !== user.user_id
-      );
-      if (convoUsers.length > 3) {
-         let firstThree = convoUsers.splice(0, 3);
-         convoUsers = [...firstThree, { name: "..." }];
+      if (users) {
+         var convoUsers = users?.filter(
+            (currUser) => currUser.user_id !== user.user_id
+         );
+         if (convoUsers.length > 3) {
+            let firstThree = convoUsers.splice(0, 3);
+            convoUsers = [...firstThree, { name: "..." }];
+         }
+         setConversationUsers(convoUsers);
       }
-      setConversationUsers(convoUsers);
 
       //Set Most Recent Message
-      if (messages != null) {
+      if (messages) {
          setRecentMessage(messages[messages.length - 1]);
       }
 
@@ -92,7 +94,7 @@ const ConversationItem = ({ conversation }) => {
                </div>
                {/* @TODO Consider Using a React Moment To Format Date AND Time */}
                <p className="text-gray-600 text-xs transition-transform duration-1000 ease-in">
-                  {recentMessage.sendDate
+                  {recentMessage?.sendDate
                      ? new Date(recentMessage.sendDate).toLocaleDateString() +
                        " " +
                        new Date(recentMessage.sendDate).toLocaleTimeString()
