@@ -4,7 +4,7 @@ import ConversationItem from "./ConversationItem";
 import AuthContext from "../../../context/auth/authContext";
 import Loading from "../../layout/Loading";
 
-const Conversation = () => {
+const Conversations = () => {
    const { filtered, conversations, loading, setLoading, setCurrent, current } =
       useContext(ConversationsContext);
 
@@ -17,7 +17,7 @@ const Conversation = () => {
 
    useEffect(() => {
       if (current == null) {
-         if (conversations.length > 1) {
+         if (conversations?.length > 1) {
             setCurrent(conversations[0]);
          }
       }
@@ -48,4 +48,4 @@ const Conversation = () => {
    );
 };
 
-export default Conversation;
+export default Conversations;

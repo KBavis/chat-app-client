@@ -23,12 +23,12 @@ const Home = () => {
          <div className="col-span-1  bg-slate-200  p-4 h-full">
             <ConversationSidebar />
          </div>
-         <div className="col-span-2 border-2 bg-slate-100 border-blue-500 p-4">
+         <div className="col-span-3 border-2 bg-slate-100 border-blue-500 p-4">
             <Conversation />
          </div>
-         <div className="col-span-1 border-2 border-red-500 p-4">
+         {/* <div className="col-span-1 border-2 border-red-500 p-4">
             Right Column
-         </div>
+         </div> */}
       </div>
    );
 };

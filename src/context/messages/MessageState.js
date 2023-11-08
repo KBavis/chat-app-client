@@ -46,7 +46,7 @@ const MessageState = (props) => {
       //       sendDate: new Date(),
       //    },
       // ],
-      messages: null,
+      messages: [],
       loading: false,
       filtered: null,
    };

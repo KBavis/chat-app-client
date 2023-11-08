@@ -5,23 +5,30 @@ import ConversationsContext from "../../context/conversations/conversationContex
 
 const DropDownMenu = ({ setMenuOpen, menuOpen }) => {
    const { leaveConversation, current } = useContext(ConversationsContext);
-   const [modalOpen, setModalOpen] = useState(false);
+   const [leaveConversationModalOpen, setLeaveConversationModalOpen] =
+      useState(false);
+   const [addUserModalOpen, setAddUserModalOpen] = useState(false);
    if (!menuOpen) return null;
 
    //@TODO Add Logic To Either Add User, Leave Conversation, or Pin Conversation
    const handleOptionClick = (option) => {
       console.log("Option Clicked: " + option);
-      //@TODO: Add Implementation for Adding User
       if (option === "Add User") {
+         // setAddUserModalOpen(true);
       } else if (option === "Leave Conversation") {
          //Pop Up Modal To Ensure That They Want to Leave Conversation
-         setModalOpen(true);
+         setLeaveConversationModalOpen(true);
       }
    };
 
    const handleConfirmLeaveConversation = () => {
-      setModalOpen(false);
+      setLeaveConversationModalOpen(false);
       leaveConversation(current.conversation_id);
+   };
+
+   const handleConfirmAddUser = () => {
+      setAddUserModalOpen(false);
+      //addUser(user);
    };
 
    return (
@@ -45,12 +52,19 @@ const DropDownMenu = ({ setMenuOpen, menuOpen }) => {
             Pin Conversation
          </div>
          <GenericModal
-            isOpen={modalOpen}
-            onClose={() => setModalOpen(false)}
+            isOpen={leaveConversationModalOpen}
+            onClose={() => setLeaveConversationModalOpen(false)}
             title="Leave Conversation"
             content="Are you sure you want to leave this conversation?"
             onConfirm={handleConfirmLeaveConversation}
          />
+         {/* <GenericModal
+            isOpen={addUserModalOpen}
+            onClose={() => setAddUserModalOpen(false)}
+            title="Add User"
+            content="Are you sure you want to add this user?"
+            onConfirm={handleConfirmAddUser}
+         /> */}
       </div>
    );
 };

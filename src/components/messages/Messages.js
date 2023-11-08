@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState, useRef } from "react";
 import ChatMessage from "./ChatMessage";
 import MessageContext from "../../context/messages/messageContext";
 import AuthContext from "../../context/auth/authContext";
@@ -18,6 +18,7 @@ const Messages = () => {
    const { user } = useContext(AuthContext);
    const conversationContext = useContext(ConversationsContext);
    const [text, setText] = useState("");
+   const messagesRef = useRef(null);
 
    const onChange = (e) => {
       setText(e.target.value);
@@ -37,6 +38,12 @@ const Messages = () => {
       setText("");
    };
 
+   useEffect(() => {
+      if (messagesRef.current) {
+         messagesRef.current.scrollTo(0, messagesRef.current.scrollHeight);
+      }
+   }, [messages]);
+
    //@TODO: Based on Current Conversation, Fetch Messages From That Conversation
    useEffect(() => {
       if (conversationContext.current) {
@@ -51,8 +58,11 @@ const Messages = () => {
    return user ? (
       // Flex Flex-Col Ensures That The Input/Send Message Is BELOW The Messages
       <div className="flex flex-col h-[85vh] mt-5">
-         {/*Flex Grow Causes The Div To Grow Vertically To Fill*/}
-         <div className="flex-grow p-4 border">
+         {/*Flex Grow Causes The Div To Grow Vertically To Fill & Overflow-Y-Auto Causes it To Be Scrollable*/}
+         <div
+            className="flex-grow p-4 border overflow-y-auto overflow-hidden no-scrollbar"
+            ref={messagesRef}
+         >
             {/* Flex Col Causes The Messages To Descend Vertically */}
             <div className="flex flex-col space-y-2">
                {messages !== null &&
