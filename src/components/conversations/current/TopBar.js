@@ -16,7 +16,7 @@ const TopBar = () => {
       if (current) {
          for (let i = 0; i < current?.users?.length; i++) {
             users +=
-               current.users[i].userName === user.userName
+               current.users[i]?.userName === user?.userName
                   ? ""
                   : current.users[i].firstName +
                     " " +

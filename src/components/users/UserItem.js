@@ -1,7 +1,55 @@
-import React from "react";
+import React, { useEffect, useContext, useState } from "react";
+import img from "../../images/1.jpg";
+import UserContext from "../../context/users/userContext";
+import ConversationsContext from "../../context/conversations/conversationContext";
+import AlertContext from "../../context/alert/alertContext";
 
-const UserItem = ({ user }) => {
-   return <div>user?.name</div>;
+const UserItem = ({ user, onClose }) => {
+   const { image } = user;
+   const { createConversation, error } = useContext(ConversationsContext);
+   const [currImage, setCurrImage] = useState("");
+   const { setAlert } = useContext(AlertContext);
+
+   useEffect(() => {
+      if (image == null) {
+         setCurrImage(img);
+      } else {
+         setCurrImage(image);
+      }
+   }, []);
+
+   const onClick = () => {
+      createConversation(user.user_id);
+      if (error) {
+         setAlert(error.msg, "danger");
+      } else {
+         setAlert("Conversation successfully created", "success");
+      }
+      onClose();
+   };
+
+   return (
+      <div
+         onClick={onClick}
+         className="flex p-4 bg-slate-100 mt-3 font-semibold w-full rounded-lg border-[2.5px] border-solid border-sky-500 hover:scale-105 hover:cursor-pointer"
+      >
+         {currImage && (
+            <img
+               className="w-16 h-16 rounded-full object-cover object-top border-sky-500 border-[3px]"
+               src={currImage}
+               alt="User Image"
+            />
+         )}
+         <div>
+            <p className="text-xl ml-3">
+               {user.firstName} {user.lastName}
+            </p>
+            <p className="ml-3 text-sm text-gray-400 font-light">
+               {user.userName}
+            </p>
+         </div>
+      </div>
+   );
 };
 
 export default UserItem;

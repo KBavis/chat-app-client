@@ -18,6 +18,7 @@ import {
    CONVERSATION_ERROR,
    CLEAR_CONVERSATIONS,
    LEAVE_CONVERSATION,
+   ADD_CONVERSATION,
 } from "./types";
 const ConversationsState = (props) => {
    //@TODO Add property 'image' to the conversation.users object, and set this image to be conversation image based on sender of recent message
@@ -107,6 +108,27 @@ const ConversationsState = (props) => {
       dispatch({ type: CLEAR_CONVERSATIONS });
    };
 
+   //Create Conversation
+   const createConversation = async (id) => {
+      try {
+         if (localStorage.token) {
+            setAuthToken(localStorage.token);
+         }
+         const res = await axios.post(`/conversations/${id}`);
+         console.log(res);
+         dispatch({
+            type: ADD_CONVERSATION,
+            payload: res.data,
+         });
+      } catch (err) {
+         console.error(err);
+         dispatch({
+            type: CONVERSATION_ERROR,
+            payload: err.response,
+         });
+      }
+   };
+
    return (
       <ConversationsContext.Provider
          value={{
@@ -123,6 +145,7 @@ const ConversationsState = (props) => {
             getUserConversations,
             clearConversations,
             leaveConversation,
+            createConversation,
          }}
       >
          {props.children};

@@ -25,12 +25,10 @@ const ConversationItem = ({ conversation }) => {
       setCurrent(conversation);
    };
 
-   //Remove Current Authenticated User From List of Users In Conversations
    useEffect(() => {
-      //Set Conversation Users
-      if (users) {
+      if (users !== null || users.length > 0) {
          var convoUsers = users?.filter(
-            (currUser) => currUser.user_id !== user.user_id
+            (currUser) => currUser?.user_id !== user?.user_id
          );
          if (convoUsers.length > 3) {
             let firstThree = convoUsers.splice(0, 3);
@@ -38,6 +36,11 @@ const ConversationItem = ({ conversation }) => {
          }
          setConversationUsers(convoUsers);
       }
+   }, [users]);
+
+   //Remove Current Authenticated User From List of Users In Conversations
+   useEffect(() => {
+      //Set Conversation Users
 
       //Set Most Recent Message
       if (messages) {

@@ -27,7 +27,7 @@ const UserState = (props) => {
          console.log(`Payload Data: ${payloadData}`);
          dispatch({
             type: GET_USERS,
-            payload: res.data,
+            payload: payloadData,
          });
       } catch (err) {
          console.error(err);
