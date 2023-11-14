@@ -12,11 +12,6 @@ const ConversationsSidebar = () => {
 
    const [modalOpen, setModalOpen] = useState(false);
 
-   //Fetch Conversations Any Time Conversations Is Updated
-   useEffect(() => {
-      getUserConversations();
-   }, [conversations]);
-
    const { users, getUsers, loading, filtered } = useContext(UserContext);
    useEffect(() => {
       getUsers();
@@ -37,8 +32,15 @@ const ConversationsSidebar = () => {
                Create Conversation
             </button>
          </div>
-         {conversations != null ? <FilterConversations /> : ""}
-         <Conversations />
+         {conversations && <FilterConversations />}
+         <div className="overflow-y-auto max-h-[70vh] no-scrollbar">
+            <Conversations />
+         </div>
+         {conversations && (
+            <div className="flex justify-center items-center mt-5 text-gray-800">
+               <i className="fa-solid fa-up-down"></i>
+            </div>
+         )}
          <CreateConversation
             modalOpen={modalOpen}
             onClose={() => setModalOpen(false)}

@@ -3,6 +3,7 @@ import authReducer from "./authReducer";
 import AuthContext from "./authContext";
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
+import removeAuthToken from "../../utils/removeAuthToken";
 import img from "../../images/profile_pic_cropped.jpg";
 import {
    REGISTER_SUCCESS,
@@ -19,21 +20,6 @@ import {
    /* @TODO: Change user to null and set up loadUser */
 }
 const AuthState = (props) => {
-   // const initalState = {
-   //    token: localStorage.getItem("token"),
-   //    isAuthenticated: null,
-   //    loading: true,
-   //    error: null,
-   //    user: {
-   //       id: 4,
-   //       profileImage: img,
-   //       name: "Kellen Bavis",
-   //       conversations: null,
-   //       messagesSent: null,
-   //       title: "Software Engineer",
-   //    },
-   // };
-
    const initalState = {
       token: null,
       isAuthenticated: null,
@@ -109,13 +95,17 @@ const AuthState = (props) => {
       };
 
       try {
+         if (localStorage.token) {
+            removeAuthToken();
+         }
          const res = await axios.post("/auth/authenticate", formData, config);
          dispatch({
             type: LOGIN_SUCCESS,
             payload: res.data,
          });
       } catch (err) {
-         console.log(`Error Response: ${err.response}`);
+         console.log(err.response);
+         console.log(`Error Response: ${err.response.data}`);
          dispatch({
             type: LOGIN_FAIL,
             payload: err.response.data,

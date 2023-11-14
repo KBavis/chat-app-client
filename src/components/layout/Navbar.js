@@ -31,14 +31,6 @@ const Navbar = () => {
                </Link>
             </li>
             <li>
-               <Link
-                  className="transition-opacity ease-in hover:opacity-80"
-                  to="/profile"
-               >
-                  Profile
-               </Link>
-            </li>
-            <li>
                <a
                   onClick={onLogout}
                   href="#!"

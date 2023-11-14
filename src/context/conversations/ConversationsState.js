@@ -20,6 +20,7 @@ import {
    LEAVE_CONVERSATION,
    ADD_CONVERSATION,
 } from "./types";
+import { ADD_USER } from "../users/types";
 const ConversationsState = (props) => {
    //@TODO Add property 'image' to the conversation.users object, and set this image to be conversation image based on sender of recent message
    const initalState = {
@@ -43,6 +44,29 @@ const ConversationsState = (props) => {
          dispatch({
             type: LEAVE_CONVERSATION,
             payload: id,
+         });
+      } catch (err) {
+         console.error(err);
+         dispatch({
+            type: CONVERSATION_ERROR,
+            payload: err.response,
+         });
+      }
+   };
+
+   //Add User To Conversation
+   const addUser = async (conversation_id, user_id) => {
+      try {
+         if (localStorage.token) {
+            setAuthToken(localStorage.token);
+         }
+         const res = await axios.put(
+            `/conversations/${conversation_id}/${user_id}`
+         );
+         console.log(res.data);
+         dispatch({
+            type: ADD_USER,
+            payload: res.data,
          });
       } catch (err) {
          console.error(err);
@@ -115,7 +139,6 @@ const ConversationsState = (props) => {
             setAuthToken(localStorage.token);
          }
          const res = await axios.post(`/conversations/${id}`);
-         console.log(res);
          dispatch({
             type: ADD_CONVERSATION,
             payload: res.data,
@@ -146,6 +169,7 @@ const ConversationsState = (props) => {
             clearConversations,
             leaveConversation,
             createConversation,
+            addUser,
          }}
       >
          {props.children};

@@ -18,6 +18,7 @@ const Home = () => {
    useEffect(() => {
       loadUser();
    }, []);
+
    return (
       <div className="grid grid-cols-4 w-full h-full">
          <div className="col-span-1  bg-slate-200  p-4 h-full">

@@ -1,4 +1,10 @@
-import { GET_USER, GET_USERS, USER_ERROR } from "./types";
+import {
+   GET_USER,
+   GET_USERS,
+   USER_ERROR,
+   FILTER_USERS,
+   CLEAR_FILTER,
+} from "./types";
 import { useReducer, useContext } from "react";
 import userReducer from "./userReducer";
 import UserContext from "./userContext";
@@ -24,7 +30,6 @@ const UserState = (props) => {
          const payloadData = res.data._embedded
             ? res.data._embedded.userResponseDTOes
             : null;
-         console.log(`Payload Data: ${payloadData}`);
          dispatch({
             type: GET_USERS,
             payload: payloadData,
@@ -38,6 +43,16 @@ const UserState = (props) => {
       }
    };
 
+   //Filter Users
+   const filterUsers = (text) => {
+      dispatch({ type: FILTER_USERS, payload: text });
+   };
+
+   //Clear Filter
+   const clearFilter = () => {
+      dispatch({ type: CLEAR_FILTER });
+   };
+
    return (
       <UserContext.Provider
          value={{
@@ -47,6 +62,8 @@ const UserState = (props) => {
             loading: state.loading,
             //Functions
             getUsers,
+            filterUsers,
+            clearFilter,
          }}
       >
          {props.children}

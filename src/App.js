@@ -1,7 +1,6 @@
 import React, { Fragment } from "react";
 import Navbar from "./components/layout/Navbar";
 import Home from "./components/pages/Home";
-import Profile from "./components/pages/Profile";
 import Login from "./components/auth/Login";
 import Register from "./components/auth/Register";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
@@ -27,7 +26,6 @@ const App = () => {
                               <Routes>
                                  <Route path="/" element={<Home />} />
                                  <Route path="/login" element={<Login />} />
-                                 <Route path="/profile" element={<Profile />} />
                                  <Route
                                     path="/register"
                                     element={<Register />}

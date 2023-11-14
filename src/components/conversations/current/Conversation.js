@@ -5,19 +5,15 @@ import ConversationsContext from "../../../context/conversations/conversationCon
 const Conversation = () => {
    const { current, conversations, setCurrent } =
       useContext(ConversationsContext);
-   useEffect(() => {
-      if (!current) {
-         if (conversations) {
-            setCurrent(conversations[0]);
-         } else {
-            setCurrent(null);
-         }
-      }
-   }, [current]);
-   return (
+
+   return conversations && current ? (
       <div>
          <TopBar />
          <Messages />
+      </div>
+   ) : (
+      <div className="flex justify-center text-center text-xl text-sky-500">
+         <h1>Please Create Some Conversations</h1>
       </div>
    );
 };

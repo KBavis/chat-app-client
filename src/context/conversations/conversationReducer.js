@@ -10,6 +10,7 @@ import {
    CLEAR_CONVERSATIONS,
    CONVERSATION_ERROR,
    LEAVE_CONVERSATION,
+   ADD_USER,
 } from "./types";
 
 export default (state, action) => {
@@ -23,8 +24,8 @@ export default (state, action) => {
                // Filter Based On Users In Convo
                for (let i = 0; i < convo.users.length; i++) {
                   if (
-                     convo.users[i].firstName.match(regex) ||
-                     convo.users[i].lastName.match(regex)
+                     convo.users[i]?.firstName?.match(regex) ||
+                     convo.users[i]?.lastName?.match(regex)
                   ) {
                      return true;
                   }
@@ -36,22 +37,36 @@ export default (state, action) => {
          return {
             ...state,
             conversations: state.conversations.filter(
-               (convo) => convo.id !== action.payload
+               (convo) => convo.conversation_id !== action.payload
             ),
             filtered: null,
             loading: false,
             current: null,
          };
       case ADD_CONVERSATION:
-         return {
-            ...state,
-            conversations: [...state.conversations, action.payload],
-            loading: false,
-         };
+         if (state.conversations) {
+            return {
+               ...state,
+               conversations: [...state.conversations, action.payload],
+               loading: false,
+            };
+         } else {
+            return {
+               ...state,
+               conversations: [action.payload],
+               loading: false,
+            };
+         }
       case GET_USER_CONVERSATIONS:
          return {
             ...state,
             conversations: action.payload,
+            loading: false,
+         };
+      case ADD_USER:
+         return {
+            ...state,
+            current: action.payload,
             loading: false,
          };
       case CLEAR_FILTER:

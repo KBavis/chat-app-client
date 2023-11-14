@@ -1,5 +1,6 @@
 import React from "react";
 import Users from "../../users/Users";
+import FilterUsers from "../../users/FilterUsers";
 
 const CreateConversation = ({ modalOpen, onClose }) => {
    return modalOpen ? (
@@ -18,8 +19,11 @@ const CreateConversation = ({ modalOpen, onClose }) => {
                   Select a user to start a conversation with
                </p>
             </div>
+            <div className="flex justify-center w-full ">
+               <FilterUsers />
+            </div>
             <div className="flex flex-row mb-4">
-               <Users onClose={onClose}></Users>
+               <Users onClose={onClose} isCreateConversation={true}></Users>
             </div>
          </div>
       </div>

@@ -18,7 +18,6 @@ const ConversationItem = ({ conversation }) => {
 
    const onDelete = () => {
       deleteConversation(conversation_id);
-      clearCurrent();
    };
 
    const onClick = () => {
@@ -36,7 +35,7 @@ const ConversationItem = ({ conversation }) => {
          }
          setConversationUsers(convoUsers);
       }
-   }, [users]);
+   }, [conversation.users]);
 
    //Remove Current Authenticated User From List of Users In Conversations
    useEffect(() => {

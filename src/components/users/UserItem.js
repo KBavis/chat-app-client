@@ -4,9 +4,10 @@ import UserContext from "../../context/users/userContext";
 import ConversationsContext from "../../context/conversations/conversationContext";
 import AlertContext from "../../context/alert/alertContext";
 
-const UserItem = ({ user, onClose }) => {
+const UserItem = ({ user, onClose, isCreateConversation }) => {
    const { image } = user;
-   const { createConversation, error } = useContext(ConversationsContext);
+   const { createConversation, error, current, addUser } =
+      useContext(ConversationsContext);
    const [currImage, setCurrImage] = useState("");
    const { setAlert } = useContext(AlertContext);
 
@@ -19,13 +20,23 @@ const UserItem = ({ user, onClose }) => {
    }, []);
 
    const onClick = () => {
-      createConversation(user.user_id);
-      if (error) {
-         setAlert(error.msg, "danger");
+      if (isCreateConversation) {
+         createConversation(user.user_id);
+         if (error) {
+            setAlert(error.msg, "danger");
+         } else {
+            setAlert("Conversation successfully created", "success");
+         }
+         onClose();
       } else {
-         setAlert("Conversation successfully created", "success");
+         addUser(current.conversation_id, user.user_id);
+         if (error) {
+            setAlert(error.msg, "danger");
+         } else {
+            setAlert("User succesfully added to conversation", "success");
+         }
+         onClose();
       }
-      onClose();
    };
 
    return (

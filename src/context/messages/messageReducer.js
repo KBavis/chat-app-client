@@ -11,10 +11,17 @@ import {
 export default (state, action) => {
    switch (action.type) {
       case SEND_MESSAGE:
-         return {
-            ...state,
-            messages: [...state.messages, action.payload],
-         };
+         if (state.messages) {
+            return {
+               ...state,
+               messages: [...state.messages, action.payload],
+            };
+         } else {
+            return {
+               ...state,
+               messages: [action.payload],
+            };
+         }
       case GET_MESSAGES:
          return {
             ...state,

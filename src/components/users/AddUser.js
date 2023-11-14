@@ -1,32 +1,34 @@
 import React from "react";
+import Users from "./Users";
+import FilterUsers from "./FilterUsers";
 
-const AddUser = () => {
-   return (
-      <div className="fixed inset-0 flex items-center justify-center z-50">
-         <div className=" bg-white p-8 rounded shadow-lg">
+const AddUser = ({ modalOpen, onClose }) => {
+   return modalOpen ? (
+      <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">
+         <div className=" bg-white h-[600px] w-[600px] p-8 rounded shadow-lg overflow-y-auto no-scrollbar">
             <div className="flex justify-between items-center mb-4">
-               <h2 className="text-xl font-bold">{title}</h2>
-               <span className="cursor-pointer" onClick={onClose}>
+               <h2 className="text-3xl font-bold m-auto text-sky-500">
+                  Add User
+               </h2>
+               <span onClick={onClose} className="cursor-pointer text-3xl">
                   &times;
                </span>
             </div>
-            <div className="mb-4">{content}</div>
-            <div className="flex justify-end">
-               <button
-                  onClick={onClose}
-                  className="modal-button-cancel px-4 py-2 mr-2 text-white bg-red-500 rounded hover:bg-red-600"
-               >
-                  Cancel
-               </button>
-               <button
-                  onClick={onConfirm}
-                  className="modal-button-confirm px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600"
-               >
-                  Confirm
-               </button>
+            <div className="flex w-full">
+               <p className="m-auto text-base w-full text-center mr-4 text-slate-500">
+                  Select a user to add to the conversation
+               </p>
+            </div>
+            <div className="flex justify-center w-full ">
+               <FilterUsers />
+            </div>
+            <div className="flex flex-row mb-4">
+               <Users onClose={onClose} isCreateConversation={false}></Users>
             </div>
          </div>
       </div>
+   ) : (
+      ""
    );
 };
 

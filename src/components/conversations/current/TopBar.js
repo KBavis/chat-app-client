@@ -35,13 +35,12 @@ const TopBar = () => {
       }
    }, [current]);
 
-   //@TODO: Open Menu Modal That Gives User Option To Add A User To The Conversaiton, Leave The Conversation, Pin The Conversation, Etc.
    const onClick = () => {
       setMenuOpen(!menuOpen);
    };
 
    //@TODO: Make It So Each Users Name Is Clickable (i.e Click That User Will Bring You To That User's Profile)
-   return (
+   return current ? (
       <div className="relative">
          <div className="flex items-center">
             <div className="w-full flex items-center">
@@ -70,6 +69,8 @@ const TopBar = () => {
             <div className="w-full border-[1px] mt-10 border-slate-800"></div>
          )}
       </div>
+   ) : (
+      ""
    );
 };
 

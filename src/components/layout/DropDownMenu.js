@@ -2,9 +2,10 @@ import React from "react";
 import { useState, useContext } from "react";
 import GenericModal from "./GenericModal";
 import ConversationsContext from "../../context/conversations/conversationContext";
-
+import AddUser from "../users/AddUser";
 const DropDownMenu = ({ setMenuOpen, menuOpen }) => {
-   const { leaveConversation, current } = useContext(ConversationsContext);
+   const { leaveConversation, current, setCurrent, conversations } =
+      useContext(ConversationsContext);
    const [leaveConversationModalOpen, setLeaveConversationModalOpen] =
       useState(false);
    const [addUserModalOpen, setAddUserModalOpen] = useState(false);
@@ -14,16 +15,19 @@ const DropDownMenu = ({ setMenuOpen, menuOpen }) => {
    const handleOptionClick = (option) => {
       console.log("Option Clicked: " + option);
       if (option === "Add User") {
-         // setAddUserModalOpen(true);
+         setAddUserModalOpen(true);
       } else if (option === "Leave Conversation") {
          //Pop Up Modal To Ensure That They Want to Leave Conversation
          setLeaveConversationModalOpen(true);
       }
    };
 
-   const handleConfirmLeaveConversation = () => {
+   const handleConfirmLeaveConversation = async () => {
+      console.log("Conversation Leaving ID: " + current.conversation_id);
       setLeaveConversationModalOpen(false);
-      leaveConversation(current.conversation_id);
+      //Ensure That This Is Executed
+      await leaveConversation(current.conversation_id);
+      setMenuOpen(false);
    };
 
    const handleConfirmAddUser = () => {
@@ -57,6 +61,10 @@ const DropDownMenu = ({ setMenuOpen, menuOpen }) => {
             title="Leave Conversation"
             content="Are you sure you want to leave this conversation?"
             onConfirm={handleConfirmLeaveConversation}
+         />
+         <AddUser
+            modalOpen={addUserModalOpen}
+            onClose={() => setAddUserModalOpen(false)}
          />
          {/* <GenericModal
             isOpen={addUserModalOpen}

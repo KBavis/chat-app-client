@@ -46,7 +46,8 @@ const Messages = () => {
 
    //@TODO: Based on Current Conversation, Fetch Messages From That Conversation
    useEffect(() => {
-      if (conversationContext.current) {
+      if (conversationContext.current !== null) {
+         console.log("In Here");
          setLoading();
          getMessages(conversationContext.current.conversation_id);
       }
