@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../../context/auth/authContext";
 import img from "../../images/1.jpg";
+import UserProfile from "./UserProfile";
 const ProfileBrief = (props) => {
    {
       /* @TODO Change This To Extract The Current Authenticated Users Credentials 
@@ -15,6 +16,7 @@ const ProfileBrief = (props) => {
       ({ firstName, lastName, userName, image } = user);
    }
    const [currImage, setCurrImage] = useState("");
+   const [modalOpen, setModalOpen] = useState("");
 
    useEffect(() => {
       if (image == null) {
@@ -23,6 +25,10 @@ const ProfileBrief = (props) => {
          setCurrImage(image);
       }
    }, []);
+
+   const onClick = () => {
+      setModalOpen(true);
+   };
 
    return user ? (
       <div className="flex space-x-6">
@@ -38,11 +44,18 @@ const ProfileBrief = (props) => {
                <h1 className="text-sky-500 text-2xl font-bold">
                   {firstName + " " + lastName}
                </h1>{" "}
-               <i className="fa-solid fa-pen text-gray-500 transition-opacity hover:opacity-70 cursor-pointer"></i>
+               <i
+                  onClick={onClick}
+                  className="fa-solid fa-pen text-gray-500 transition-opacity hover:opacity-70 cursor-pointer"
+               ></i>
             </div>
             {/* @TODO: Change this to a title */}
             <h2 className="font-light text-md text-gray-500">{userName}</h2>
          </div>
+         <UserProfile
+            modalOpen={modalOpen}
+            onClose={() => setModalOpen(false)}
+         />
       </div>
    ) : (
       "Please Sign In"

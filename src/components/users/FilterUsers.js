@@ -9,7 +9,7 @@ const FilterUsers = () => {
       const value = e.target.value;
       setInputValue(value);
 
-      if (value !== "") {
+      if (value !== "" || value.length() > 0) {
          filterUsers(inputValue);
       } else {
          clearFilter();
