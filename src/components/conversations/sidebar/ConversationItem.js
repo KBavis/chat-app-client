@@ -2,10 +2,13 @@ import React, { useContext, useEffect, useState } from "react";
 import ConversationsContext from "../../../context/conversations/conversationContext";
 import AuthContext from "../../../context/auth/authContext";
 import img from "../../../images/1.jpg";
+import MessageContext from "../../../context/messages/messageContext";
 
 const ConversationItem = ({ conversation }) => {
-   const { deleteConversation, setCurrent, clearCurrent, current } =
+   const { deleteConversation, setCurrent, clearCurrent, current, image } =
       useContext(ConversationsContext);
+
+   const messageContext = useContext(MessageContext);
 
    const { user } = useContext(AuthContext);
 
@@ -13,8 +16,7 @@ const ConversationItem = ({ conversation }) => {
    const [recentMessage, setRecentMessage] = useState({});
    const [currImage, setCurrImage] = useState("");
 
-   const { conversation_id, users, messages, image, conversationStart } =
-      conversation;
+   const { conversation_id, users, messages, conversationStart } = conversation;
 
    const onDelete = () => {
       deleteConversation(conversation_id);
@@ -37,15 +39,40 @@ const ConversationItem = ({ conversation }) => {
       }
    }, [conversation.users]);
 
-   //Remove Current Authenticated User From List of Users In Conversations
+   //Update Recent Message and Recent User Profile Image
    useEffect(() => {
-      //Set Conversation Users
+      if (current && conversation) {
+         if (current.conversation_id === conversation.conversation_id) {
+            if (
+               messageContext.messages !== null &&
+               messageContext.messages.length > 0
+            ) {
+               //Set Recent Message To Most Recently Sent Message
+               setRecentMessage(
+                  messageContext.messages[messageContext.messages.length - 1]
+               );
+               //Set Conversation Item Image To Recent User's Profile Image (AS LONG AS IT ISN'T YOU)
+               if (
+                  messageContext.messages[messageContext.messages.length - 1]
+                     .sender.user_id !== user.user_id
+               ) {
+                  setCurrImage(
+                     messageContext.messages[messageContext.messages.length - 1]
+                        .sender?.profileImage
+                  );
+               }
+            }
+         }
+      }
+   }, [messageContext.messages]);
 
-      //Set Most Recent Message
+   useEffect(() => {
+      //Set Most Recent Message On Component Load
       if (messages) {
          setRecentMessage(messages[messages.length - 1]);
       }
 
+      //Set Conversation Image On Component Load
       if (image == null) {
          setCurrImage(img);
       } else {

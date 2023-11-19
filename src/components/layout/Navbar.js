@@ -6,10 +6,12 @@ import MessageContext from "../../context/messages/messageContext";
 
 const Navbar = () => {
    const { logoutUser, isAuthenticated } = useContext(AuthContext);
-   const { clearConversations } = useContext(ConversationsContext);
+   const { clearConversations, clearCurrent } =
+      useContext(ConversationsContext);
    const { clearMessages } = useContext(MessageContext);
 
    const onLogout = () => {
+      clearCurrent();
       logoutUser();
       clearConversations();
       clearMessages();

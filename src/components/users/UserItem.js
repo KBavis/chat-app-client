@@ -6,8 +6,14 @@ import AlertContext from "../../context/alert/alertContext";
 
 const UserItem = ({ user, onClose, isCreateConversation }) => {
    const { image } = user;
-   const { createConversation, error, current, addUser } =
-      useContext(ConversationsContext);
+   const {
+      createConversation,
+      error,
+      current,
+      addUser,
+      setCurrent,
+      conversations,
+   } = useContext(ConversationsContext);
    const [currImage, setCurrImage] = useState("");
    const { setAlert } = useContext(AlertContext);
 
@@ -19,9 +25,9 @@ const UserItem = ({ user, onClose, isCreateConversation }) => {
       }
    }, []);
 
-   const onClick = () => {
+   const onClick = async () => {
       if (isCreateConversation) {
-         createConversation(user.user_id);
+         await createConversation(user.user_id);
          if (error) {
             setAlert(error.msg, "danger");
          } else {

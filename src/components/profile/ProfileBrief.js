@@ -3,28 +3,21 @@ import AuthContext from "../../context/auth/authContext";
 import img from "../../images/1.jpg";
 import UserProfile from "./UserProfile";
 const ProfileBrief = (props) => {
-   {
-      /* @TODO Change This To Extract The Current Authenticated Users Credentials 
-         @TODO Add On Click For Icon To Go To Edit Profile Page 
-      */
-   }
    const { user } = useContext(AuthContext);
 
-   let firstName, lastName, userName, image;
+   let firstName, lastName, userName, profileImage;
 
    if (user) {
-      ({ firstName, lastName, userName, image } = user);
+      ({ firstName, lastName, userName, profileImage } = user);
    }
-   const [currImage, setCurrImage] = useState("");
+   const [currImage, setCurrImage] = useState(img);
    const [modalOpen, setModalOpen] = useState("");
 
    useEffect(() => {
-      if (image == null) {
-         setCurrImage(img);
-      } else {
-         setCurrImage(image);
+      if (profileImage) {
+         setCurrImage(profileImage);
       }
-   }, []);
+   }, [user]);
 
    const onClick = () => {
       setModalOpen(true);

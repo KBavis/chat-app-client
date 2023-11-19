@@ -1,22 +1,41 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context/auth/authContext";
 import one from "../../images/1.jpg";
+import AlertContext from "../../context/alert/alertContext";
 
 const UserProfile = ({ modalOpen, onClose }) => {
-   const { user } = useContext(AuthContext);
+   //Fetch Authenticated User
+   const { user, updateUser, error } = useContext(AuthContext);
 
-   const onSubmit = () => {
-      console.log("Submit Clicked!");
-   };
+   //Set Alerts
+   const { setAlert } = useContext(AlertContext);
 
    // Destructure User
-   const { firstName, lastName, userName, img } = user;
+   const { firstName, lastName, userName, profileImage, user_id } = user;
 
-   const [updates, setUpdates] = useState({
+   //Default State If No Img Is Set For Authenticated User
+   const defaultState = {
       image: one,
       name: firstName + " " + lastName,
       username: userName,
-   });
+   };
+
+   //Conditionally Use Default State If Profile Image is Null
+   const [updates, setUpdates] = useState(
+      !profileImage
+         ? defaultState
+         : {
+              image: profileImage,
+              name: firstName + " " + lastName,
+              username: userName,
+           }
+   );
+
+   //State to track new profile image file
+   const [imageFile, setImageFile] = useState(null);
+
+   //State to track if the image file was change
+   const [imageUpdated, setImageUpdated] = useState(false);
 
    const { name, username, image } = updates;
 
@@ -26,6 +45,8 @@ const UserProfile = ({ modalOpen, onClose }) => {
 
    const onImageChange = (e) => {
       const file = e.target.files[0]; // Get the selected file
+      setImageFile(file);
+      setImageUpdated(true);
       if (file) {
          const reader = new FileReader();
          reader.onloadend = () => {
@@ -38,6 +59,20 @@ const UserProfile = ({ modalOpen, onClose }) => {
       }
    };
 
+   const onSubmit = (e) => {
+      e.preventDefault();
+      let names = updates.name.split(" ");
+      let updatedUser = {
+         userName: updates.username,
+         firstName: names[0],
+         lastName: names[1],
+      };
+      updateUser(updatedUser, imageFile, imageUpdated, user_id);
+      setImageUpdated(false);
+      if (!error) {
+         setAlert("Successfully updated user profile", "success");
+      }
+   };
    return modalOpen ? (
       <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">
          <div className=" bg-white h-[600px] w-[600px] p-8 rounded shadow-lg overflow-y-auto no-scrollbar">
@@ -73,6 +108,7 @@ const UserProfile = ({ modalOpen, onClose }) => {
                   <input
                      type="text"
                      className="bg-gray-100 rounded-md w-full outline-none border-none px-2 py-1 mb-1"
+                     name="name"
                      value={name}
                      onChange={onChange}
                   />
@@ -87,7 +123,8 @@ const UserProfile = ({ modalOpen, onClose }) => {
                   <input
                      type="text"
                      className="bg-gray-100 rounded-md w-full outline-none border-none px-2 py-1 mb-1"
-                     value={userName}
+                     value={username}
+                     name="username"
                      onChange={onChange}
                   />
                </div>

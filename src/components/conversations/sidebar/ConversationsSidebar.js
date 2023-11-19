@@ -7,7 +7,7 @@ import CreateConversation from "./CreateConversation";
 import UserContext from "../../../context/users/userContext";
 
 const ConversationsSidebar = () => {
-   const { getUserConversations, conversations } =
+   const { getUserConversations, conversations, current, setCurrent } =
       useContext(ConversationsContext);
 
    const [modalOpen, setModalOpen] = useState(false);
@@ -36,11 +36,6 @@ const ConversationsSidebar = () => {
          <div className="overflow-y-auto max-h-[70vh] no-scrollbar">
             <Conversations />
          </div>
-         {conversations && (
-            <div className="flex justify-center items-center mt-5 text-gray-800">
-               <i className="fa-solid fa-up-down"></i>
-            </div>
-         )}
          <CreateConversation
             modalOpen={modalOpen}
             onClose={() => setModalOpen(false)}

@@ -4,7 +4,6 @@ import AuthContext from "./authContext";
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
 import removeAuthToken from "../../utils/removeAuthToken";
-import img from "../../images/profile_pic_cropped.jpg";
 import {
    REGISTER_SUCCESS,
    REGISTER_FAIL,
@@ -14,7 +13,9 @@ import {
    LOGOUT,
    CLEAR_ERRORS,
    AUTH_ERROR,
+   UPDATE_FAIL,
 } from "./types";
+import AlertContext from "../alert/alertContext";
 
 {
    /* @TODO: Change user to null and set up loadUser */
@@ -26,14 +27,6 @@ const AuthState = (props) => {
       loading: true,
       error: null,
       user: null,
-      // user: {
-      //    id: 4,
-      //    profileImage: img,
-      //    name: "Kellen Bavis",
-      //    conversations: null,
-      //    messagesSent: null,
-      //    title: "Software Engineer",
-      // },
    };
 
    const [state, dispatch] = useReducer(authReducer, initalState);
@@ -47,13 +40,23 @@ const AuthState = (props) => {
       try {
          const res = await axios.get("/users/load");
          const data = res.data;
-         const { user_id, userName, firstName, lastName } = data;
-         let user = {
-            user_id,
-            userName,
-            firstName,
-            lastName,
-         };
+         const { user_id, userName, firstName, lastName, profileImage } = data;
+         const user =
+            profileImage == null
+               ? {
+                    user_id,
+                    userName,
+                    firstName,
+                    lastName,
+                    profileImage: null,
+                 }
+               : {
+                    user_id,
+                    userName,
+                    firstName,
+                    lastName,
+                    profileImage,
+                 };
          dispatch({
             type: LOAD_USER,
             payload: user,
@@ -71,6 +74,7 @@ const AuthState = (props) => {
          },
       };
       try {
+         removeAuthToken();
          const res = await axios.post("/auth/register", formData, config);
 
          dispatch({
@@ -95,9 +99,7 @@ const AuthState = (props) => {
       };
 
       try {
-         if (localStorage.token) {
-            removeAuthToken();
-         }
+         removeAuthToken();
          const res = await axios.post("/auth/authenticate", formData, config);
          dispatch({
             type: LOGIN_SUCCESS,
@@ -113,9 +115,56 @@ const AuthState = (props) => {
       }
    };
 
+   //Update User
+   const updateUser = async (formData, imageFile, imageUpdated, id) => {
+      console.log(`Id Passsed: ${id}`);
+      const userConfig = {
+         headers: {
+            "Content-Type": "application/json",
+         },
+      };
+
+      const imageConfig = {
+         headers: {
+            "Content-Type": "multipart/form-data",
+         },
+      };
+
+      //Determine If We Need To Update Profile Image
+      try {
+         //Update Profile Image If Updated
+         if (imageUpdated) {
+            if (localStorage.token) {
+               setAuthToken(localStorage.token);
+            }
+
+            //Create Form Data With Image
+            const data = new FormData();
+            data.append("file", imageFile);
+
+            //Upload Image
+            const res = await axios.post("/file/upload", data, imageConfig);
+         }
+
+         //Update Username & Name
+         const res = await axios.put(`/users/${id}`, formData, userConfig);
+
+         //Reload User
+         loadUser();
+      } catch (err) {
+         console.error(err.response);
+         dispatch({
+            type: UPDATE_FAIL,
+            payload: err.response.data,
+         });
+      }
+   };
+
    //Logout User
 
-   const logoutUser = () => dispatch({ type: LOGOUT });
+   const logoutUser = () => {
+      dispatch({ type: LOGOUT });
+   };
    //Clear Errors
    const clearErrors = () => dispatch({ type: CLEAR_ERRORS });
 
@@ -132,6 +181,7 @@ const AuthState = (props) => {
             loginUser,
             logoutUser,
             clearErrors,
+            updateUser,
          }}
       >
          {props.children}

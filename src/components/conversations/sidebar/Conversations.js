@@ -3,6 +3,7 @@ import ConversationsContext from "../../../context/conversations/conversationCon
 import ConversationItem from "./ConversationItem";
 import AuthContext from "../../../context/auth/authContext";
 import Loading from "../../layout/Loading";
+import MessageContext from "../../../context/messages/messageContext";
 
 const Conversations = () => {
    const {
@@ -15,18 +16,21 @@ const Conversations = () => {
       getUserConversations,
    } = useContext(ConversationsContext);
 
+   const { messages } = useContext(MessageContext);
+
    const { user } = useContext(AuthContext);
 
-   //Fetch Conversations Any Time Conversations Is Updated
+   //Fetch Authenticated Users Conversations
    useEffect(() => {
       getUserConversations();
-   }, [current]);
+   }, []);
 
+   //Set Curent Conversation Any Time Conversations Is Updated (Leaving/Adding Conversation)
    useEffect(() => {
-      if (!current && conversations) {
+      if (conversations !== null && current === null) {
          setCurrent(conversations[0]);
       }
-   }, [conversations]);
+   }, [conversations, messages]);
 
    return loading ? (
       <Loading />

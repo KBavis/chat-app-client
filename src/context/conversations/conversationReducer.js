@@ -47,7 +47,7 @@ export default (state, action) => {
          if (state.conversations) {
             return {
                ...state,
-               conversations: [...state.conversations, action.payload],
+               conversations: [action.payload, ...state.conversations],
                loading: false,
             };
          } else {

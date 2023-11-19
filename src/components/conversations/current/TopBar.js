@@ -4,9 +4,11 @@ import ConversationsContext from "../../../context/conversations/conversationCon
 import AuthContext from "../../../context/auth/authContext";
 import img from "../../../images/1.jpg";
 import DropDownMenu from "../../layout/DropDownMenu";
+import MessageContext from "../../../context/messages/messageContext";
 const TopBar = () => {
    const { current } = useContext(ConversationsContext);
    const { user } = useContext(AuthContext);
+   const { messages } = useContext(MessageContext);
    const [currUsers, setCurrUsers] = useState("");
    const [currImage, setCurrImage] = useState("");
    const [menuOpen, setMenuOpen] = useState(false);
@@ -28,12 +30,14 @@ const TopBar = () => {
    }, [current]);
 
    useEffect(() => {
-      if (current?.image) {
-         setCurrImage(current.image);
+      if (messages && messages.length > 0) {
+         if (messages[messages.length - 1].sender.user_id !== user.user_id) {
+            setCurrImage(messages[messages.length - 1].sender.profileImage);
+         }
       } else {
          setCurrImage(img);
       }
-   }, [current]);
+   }, [current, messages]);
 
    const onClick = () => {
       setMenuOpen(!menuOpen);
