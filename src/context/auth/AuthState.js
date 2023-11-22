@@ -4,6 +4,7 @@ import AuthContext from "./authContext";
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
 import removeAuthToken from "../../utils/removeAuthToken";
+import one from "../../images/default.jpg";
 import {
    REGISTER_SUCCESS,
    REGISTER_FAIL,
@@ -48,7 +49,7 @@ const AuthState = (props) => {
                     userName,
                     firstName,
                     lastName,
-                    profileImage: null,
+                    profileImage: one,
                  }
                : {
                     user_id,

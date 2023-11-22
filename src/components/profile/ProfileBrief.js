@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../../context/auth/authContext";
-import img from "../../images/1.jpg";
+import img from "../../images/default.jpg";
 import UserProfile from "./UserProfile";
 const ProfileBrief = (props) => {
    const { user } = useContext(AuthContext);

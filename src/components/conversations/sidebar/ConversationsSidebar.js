@@ -22,7 +22,7 @@ const ConversationsSidebar = () => {
       setModalOpen(true);
    };
    return (
-      <div className="m-auto pt-10 min-h-screen">
+      <div className="m-auto pt-10 px-2 min-h-screen">
          <ProfileBrief />
          <div className="flex">
             <button
@@ -33,7 +33,7 @@ const ConversationsSidebar = () => {
             </button>
          </div>
          {conversations && <FilterConversations />}
-         <div className="overflow-y-auto max-h-[70vh] no-scrollbar">
+         <div className="overflow-y-auto max-h-[70vh] no-scrollbar px-1 py-2">
             <Conversations />
          </div>
          <CreateConversation

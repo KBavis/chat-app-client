@@ -22,7 +22,7 @@ const CreateConversation = ({ modalOpen, onClose }) => {
             <div className="flex justify-center w-full ">
                <FilterUsers />
             </div>
-            <div className="flex flex-row mb-4">
+            <div className="flex flex-row mb-4 justify-center">
                <Users onClose={onClose} isCreateConversation={true}></Users>
             </div>
          </div>

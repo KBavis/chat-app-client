@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import AuthContext from "../../context/auth/authContext";
-import one from "../../images/1.jpg";
+import one from "../../images/default.jpg";
 import AlertContext from "../../context/alert/alertContext";
 
 const UserProfile = ({ modalOpen, onClose }) => {
@@ -72,6 +72,7 @@ const UserProfile = ({ modalOpen, onClose }) => {
       if (!error) {
          setAlert("Successfully updated user profile", "success");
       }
+      onClose();
    };
    return modalOpen ? (
       <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">

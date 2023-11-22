@@ -1,12 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
 import ConversationsContext from "../../../context/conversations/conversationContext";
 import AuthContext from "../../../context/auth/authContext";
-import img from "../../../images/1.jpg";
+import def from "../../../images/default.jpg";
 import MessageContext from "../../../context/messages/messageContext";
 
 const ConversationItem = ({ conversation }) => {
-   const { deleteConversation, setCurrent, clearCurrent, current, image } =
-      useContext(ConversationsContext);
+   const {
+      deleteConversation,
+      setCurrent,
+      clearCurrent,
+      current,
+      conversations,
+   } = useContext(ConversationsContext);
 
    const messageContext = useContext(MessageContext);
 
@@ -14,32 +19,55 @@ const ConversationItem = ({ conversation }) => {
 
    const [conversationUsers, setConversationUsers] = useState([]);
    const [recentMessage, setRecentMessage] = useState({});
-   const [currImage, setCurrImage] = useState("");
+   const [currImg, setCurrImage] = useState(def);
 
    const { conversation_id, users, messages, conversationStart } = conversation;
-
-   const onDelete = () => {
-      deleteConversation(conversation_id);
-   };
 
    const onClick = () => {
       setCurrent(conversation);
    };
 
+   //Set Recent Message, Conversation Users, And Conversation Image
    useEffect(() => {
-      if (users !== null || users.length > 0) {
-         var convoUsers = users?.filter(
+      //Fetch Conversation Messages
+
+      //Set Recent Message
+      if (messages && messages.length > 0) {
+         setRecentMessage(messages[messages.length - 1]);
+      }
+
+      //Set Conversation Users
+      if (users && users.length > 0) {
+         let convoUsers = users?.filter(
             (currUser) => currUser?.user_id !== user?.user_id
          );
+         console.log("ConvoUsers!!!");
+         console.log(convoUsers);
          if (convoUsers.length > 3) {
             let firstThree = convoUsers.splice(0, 3);
             convoUsers = [...firstThree, { name: "..." }];
          }
-         setConversationUsers(convoUsers);
+         setConversationUsers(users);
       }
-   }, [conversation.users]);
 
-   //Update Recent Message and Recent User Profile Image
+      //Set Image
+      if (messages && messages.length > 0) {
+         let mostRecentMessageSent = findRecentMessage();
+         if (mostRecentMessageSent) {
+            setCurrImage(mostRecentMessageSent.sender.profileImage);
+         } else {
+            //Set To Earliest User That Isn't Auth User
+            let convoUsers = users.filter((u) => u?.user_id !== user?.user_id);
+            setCurrImage(convoUsers[0].profileImage);
+         }
+      } else {
+         //Set To Earliest User That Isn't Auth User
+         let convoUsers = users.filter((u) => u?.user_id !== user?.user_id);
+         setCurrImage(convoUsers[0].profileImage);
+      }
+   }, []);
+
+   //Update Recent Message When Another Is Sent
    useEffect(() => {
       if (current && conversation) {
          if (current.conversation_id === conversation.conversation_id) {
@@ -51,54 +79,48 @@ const ConversationItem = ({ conversation }) => {
                setRecentMessage(
                   messageContext.messages[messageContext.messages.length - 1]
                );
-               //Set Conversation Item Image To Recent User's Profile Image (AS LONG AS IT ISN'T YOU)
-               if (
-                  messageContext.messages[messageContext.messages.length - 1]
-                     .sender.user_id !== user.user_id
-               ) {
-                  setCurrImage(
-                     messageContext.messages[messageContext.messages.length - 1]
-                        .sender?.profileImage
-                  );
-               }
             }
          }
       }
    }, [messageContext.messages]);
 
+   //Update List of Conversation Users When a User Added
    useEffect(() => {
-      //Set Most Recent Message On Component Load
+      //If This Is The Current Conversation, Update With Corresponding
+      if (current?.conversation_id === conversation?.conversation_id) {
+         let convoUsers = current.users?.filter(
+            (currUser) => currUser?.user_id !== user?.user_id
+         );
+         if (convoUsers.length > 3) {
+            let firstThree = convoUsers.splice(0, 3);
+            convoUsers = [...firstThree, { name: "..." }];
+         }
+         setConversationUsers(convoUsers);
+      }
+   }, [current?.users]);
+
+   //Helper Function To Find Most Recent Message That Wasn't Sent By You
+   //TODO: Fix Issue Regarding Messages Not Having Sender
+   const findRecentMessage = () => {
       if (messages) {
-         setRecentMessage(messages[messages.length - 1]);
+         for (let i = messages.length - 1; i >= 0; i--) {
+            if (messages[i]?.sender.user_id !== user?.user_id) {
+               return messages[i];
+            }
+         }
       }
-
-      //Set Conversation Image On Component Load
-      if (image == null) {
-         setCurrImage(img);
-      } else {
-         setCurrImage(image);
-      }
-   }, []);
-
-   //Set The Most Recent Image To Be Used For The Conversation Item
-   // useEffect(() => {}, [recentMessage]);
-
-   {
-      /* @TODO Update The Profile Image Shown Based On Most Recent Sent Messge 
-         i.e Whichever user sends most recent message, make it their image
-
-      */
-   }
+      return null;
+   };
 
    return (
       <div
          onClick={onClick}
-         className="w-full flex mt-6 py-2 hover:cursor-pointer hover:scale-105 hover:bg-slate-200"
+         className="w-full flex mt-6 py-2 hover:cursor-pointer hover:scale-105 hover:bg-slate-200 "
       >
          <div className="flex items-center mr-6">
             <img
                className="w-16 h-16 rounded-full object-cover object-top transform scale-100 transition-transform duration-1000 ease-in"
-               src={currImage}
+               src={currImg}
                alt="Conversation Pic"
             />
          </div>
@@ -122,7 +144,7 @@ const ConversationItem = ({ conversation }) => {
                   </p>
                </div>
                {/* @TODO Consider Using a React Moment To Format Date AND Time */}
-               <p className="text-gray-600 text-xs transition-transform duration-1000 ease-in">
+               <p className="text-gray-600 text-xs transition-transform duration-1000 ease-in ">
                   {recentMessage?.sendDate
                      ? new Date(recentMessage.sendDate).toLocaleDateString() +
                        " " +

@@ -1,11 +1,11 @@
 import React, { useEffect, useContext, useState } from "react";
-import img from "../../images/1.jpg";
+import img from "../../images/default.jpg";
 import UserContext from "../../context/users/userContext";
 import ConversationsContext from "../../context/conversations/conversationContext";
 import AlertContext from "../../context/alert/alertContext";
 
 const UserItem = ({ user, onClose, isCreateConversation }) => {
-   const { image } = user;
+   const { profileImage } = user;
    const {
       createConversation,
       error,
@@ -18,10 +18,10 @@ const UserItem = ({ user, onClose, isCreateConversation }) => {
    const { setAlert } = useContext(AlertContext);
 
    useEffect(() => {
-      if (image == null) {
+      if (profileImage == null) {
          setCurrImage(img);
       } else {
-         setCurrImage(image);
+         setCurrImage(profileImage);
       }
    }, []);
 

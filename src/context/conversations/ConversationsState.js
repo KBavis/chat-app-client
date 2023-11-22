@@ -63,7 +63,6 @@ const ConversationsState = (props) => {
          const res = await axios.put(
             `/conversations/${conversation_id}/${user_id}`
          );
-         console.log(res.data);
          dispatch({
             type: ADD_USER,
             payload: res.data,
