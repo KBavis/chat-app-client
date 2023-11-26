@@ -44,7 +44,6 @@ const Messages = () => {
       }
    }, [messages]);
 
-   //@TODO: Based on Current Conversation, Fetch Messages From That Conversation
    useEffect(() => {
       if (conversationContext.current !== null) {
          setLoading();
@@ -71,6 +70,7 @@ const Messages = () => {
                         key={message.message_id}
                         text={message.content}
                         sentByUser={user.user_id === message.sender.user_id}
+                        message={message}
                      />
                   ))}
             </div>

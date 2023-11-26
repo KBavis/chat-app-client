@@ -41,8 +41,6 @@ const ConversationItem = ({ conversation }) => {
          let convoUsers = users?.filter(
             (currUser) => currUser?.user_id !== user?.user_id
          );
-         console.log("ConvoUsers!!!");
-         console.log(convoUsers);
          if (convoUsers.length > 3) {
             let firstThree = convoUsers.splice(0, 3);
             convoUsers = [...firstThree, { name: "..." }];
