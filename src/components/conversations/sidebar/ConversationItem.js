@@ -3,6 +3,7 @@ import ConversationsContext from "../../../context/conversations/conversationCon
 import AuthContext from "../../../context/auth/authContext";
 import def from "../../../images/default.jpg";
 import MessageContext from "../../../context/messages/messageContext";
+import subsribeToConversation from "../../../utils/websocket-client";
 
 const ConversationItem = ({ conversation }) => {
    const {
@@ -14,14 +15,13 @@ const ConversationItem = ({ conversation }) => {
       pinned,
    } = useContext(ConversationsContext);
 
-   const messageContext = useContext(MessageContext);
-
    const { user } = useContext(AuthContext);
 
    const [conversationUsers, setConversationUsers] = useState([]);
    const [recentMessageContent, setRecentMessageContent] = useState("");
    const [recentMessage, setRecentMessage] = useState({});
    const [currImg, setCurrImage] = useState(def);
+   const messageContext = useContext(MessageContext);
 
    const { conversation_id, users, messages, conversationStart } = conversation;
 
@@ -53,6 +53,15 @@ const ConversationItem = ({ conversation }) => {
          let convoUsers = users.filter((u) => u?.user_id !== user?.user_id);
          setCurrImage(convoUsers[0].profileImage);
       }
+
+      //Subscribe to each conversation for real-time functionality
+      const subscribe = async () => {
+         console.log(
+            "Attemtping To Subsribe To Conversation: " + conversation_id
+         );
+         await subsribeToConversation(conversation_id);
+      };
+      subscribe();
    }, []);
 
    useEffect(() => {
@@ -61,7 +70,6 @@ const ConversationItem = ({ conversation }) => {
          let convoUsers = users?.filter(
             (currUser) => currUser?.user_id !== user?.user_id
          );
-         console.log(convoUsers);
          if (convoUsers.length > 3) {
             let firstThree = convoUsers.splice(0, 3);
             convoUsers = [...firstThree, { name: "..." }];
@@ -140,13 +148,13 @@ const ConversationItem = ({ conversation }) => {
                      )}
                   </h3>
                   <p className="text-gray-600 text-s transition-transform duration-1000 ease-in">
-                     {recentMessage.content && recentMessage.content.length > 50
+                     {recentMessage?.content &&
+                     recentMessage.content.length > 50
                         ? recentMessage.content.substring(0, 50) + "..."
                         : recentMessage.content}
                   </p>
                </div>
                <p className="text-gray-600 text-xs transition-transform duration-1000 ease-in ">
-                  {console.log(recentMessage)}
                   {recentMessage.sendDate &&
                      new Date(recentMessage.sendDate).toLocaleDateString() +
                         " " +

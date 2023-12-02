@@ -11,6 +11,7 @@ import {
    GET_MESSAGES,
    MESSAGE_ERROR,
    SET_LOADING,
+   RECIEVE_MESSAGE,
 } from "./types";
 import { DELETE_CONVERSATION } from "../conversations/types";
 
@@ -73,6 +74,13 @@ const MessageState = (props) => {
       }
    };
 
+   const recieveMessage = (convoId, message) => {
+      dispatch({
+         type: RECIEVE_MESSAGE,
+         payload: [convoId, message],
+      });
+   };
+
    //Delete Message
 
    //Edit Message
@@ -110,6 +118,7 @@ const MessageState = (props) => {
             sendMessage,
             clearMessages,
             setLoading,
+            recieveMessage,
          }}
       >
          {props.children}
