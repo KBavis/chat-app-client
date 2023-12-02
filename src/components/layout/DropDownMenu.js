@@ -4,26 +4,32 @@ import GenericModal from "./GenericModal";
 import ConversationsContext from "../../context/conversations/conversationContext";
 import AddUser from "../users/AddUser";
 const DropDownMenu = ({ setMenuOpen, menuOpen }) => {
-   const { leaveConversation, current, setCurrent, conversations } =
-      useContext(ConversationsContext);
+   const {
+      leaveConversation,
+      current,
+      setCurrent,
+      conversations,
+      pinConversation,
+      pinned,
+   } = useContext(ConversationsContext);
    const [leaveConversationModalOpen, setLeaveConversationModalOpen] =
       useState(false);
    const [addUserModalOpen, setAddUserModalOpen] = useState(false);
    if (!menuOpen) return null;
 
-   //@TODO Add Logic To Either Add User, Leave Conversation, or Pin Conversation
    const handleOptionClick = (option) => {
-      console.log("Option Clicked: " + option);
       if (option === "Add User") {
          setAddUserModalOpen(true);
       } else if (option === "Leave Conversation") {
          //Pop Up Modal To Ensure That They Want to Leave Conversation
          setLeaveConversationModalOpen(true);
+      } else {
+         pinConversation(current.conversation_id);
+         setMenuOpen(false);
       }
    };
 
    const handleConfirmLeaveConversation = async () => {
-      console.log("Conversation Leaving ID: " + current.conversation_id);
       setLeaveConversationModalOpen(false);
       //Ensure That This Is Executed
       await leaveConversation(current.conversation_id);
@@ -53,7 +59,10 @@ const DropDownMenu = ({ setMenuOpen, menuOpen }) => {
             onClick={() => handleOptionClick("Pin Conversation")}
             className="menu-option px-4 py-2 cursor-pointer border-[1px] border-gray-300 hover:bg-gray-100"
          >
-            Pin Conversation
+            {current.conversation_id === pinned
+               ? "Un-pin Conversation"
+               : "Pin Conversation"}
+            {current.conversati}
          </div>
          <GenericModal
             isOpen={leaveConversationModalOpen}
@@ -65,14 +74,8 @@ const DropDownMenu = ({ setMenuOpen, menuOpen }) => {
          <AddUser
             modalOpen={addUserModalOpen}
             onClose={() => setAddUserModalOpen(false)}
+            setMenuOpen={setMenuOpen}
          />
-         {/* <GenericModal
-            isOpen={addUserModalOpen}
-            onClose={() => setAddUserModalOpen(false)}
-            title="Add User"
-            content="Are you sure you want to add this user?"
-            onConfirm={handleConfirmAddUser}
-         /> */}
       </div>
    );
 };

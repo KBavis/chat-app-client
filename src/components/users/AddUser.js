@@ -2,7 +2,7 @@ import React from "react";
 import Users from "./Users";
 import FilterUsers from "./FilterUsers";
 
-const AddUser = ({ modalOpen, onClose }) => {
+const AddUser = ({ modalOpen, onClose, setMenuOpen }) => {
    return modalOpen ? (
       <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">
          <div className=" bg-white h-[600px] w-[600px] p-8 rounded shadow-lg overflow-y-auto no-scrollbar">
@@ -23,7 +23,11 @@ const AddUser = ({ modalOpen, onClose }) => {
                <FilterUsers />
             </div>
             <div className="flex flex-row mb-4">
-               <Users onClose={onClose} isCreateConversation={false}></Users>
+               <Users
+                  onClose={onClose}
+                  isCreateConversation={false}
+                  setMenuOpen={setMenuOpen}
+               ></Users>
             </div>
          </div>
       </div>

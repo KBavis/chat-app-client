@@ -11,6 +11,7 @@ const ConversationItem = ({ conversation }) => {
       clearCurrent,
       current,
       conversations,
+      pinned,
    } = useContext(ConversationsContext);
 
    const messageContext = useContext(MessageContext);
@@ -18,6 +19,7 @@ const ConversationItem = ({ conversation }) => {
    const { user } = useContext(AuthContext);
 
    const [conversationUsers, setConversationUsers] = useState([]);
+   const [recentMessageContent, setRecentMessageContent] = useState("");
    const [recentMessage, setRecentMessage] = useState({});
    const [currImg, setCurrImage] = useState(def);
 
@@ -34,18 +36,6 @@ const ConversationItem = ({ conversation }) => {
       //Set Recent Message
       if (messages && messages.length > 0) {
          setRecentMessage(messages[messages.length - 1]);
-      }
-
-      //Set Conversation Users
-      if (users && users.length > 0) {
-         let convoUsers = users?.filter(
-            (currUser) => currUser?.user_id !== user?.user_id
-         );
-         if (convoUsers.length > 3) {
-            let firstThree = convoUsers.splice(0, 3);
-            convoUsers = [...firstThree, { name: "..." }];
-         }
-         setConversationUsers(users);
       }
 
       //Set Image
@@ -65,6 +55,21 @@ const ConversationItem = ({ conversation }) => {
       }
    }, []);
 
+   useEffect(() => {
+      //Set Conversation Users
+      if (users && users.length > 0) {
+         let convoUsers = users?.filter(
+            (currUser) => currUser?.user_id !== user?.user_id
+         );
+         console.log(convoUsers);
+         if (convoUsers.length > 3) {
+            let firstThree = convoUsers.splice(0, 3);
+            convoUsers = [...firstThree, { name: "..." }];
+         }
+         setConversationUsers(convoUsers);
+      }
+   }, [users]);
+
    //Update Recent Message When Another Is Sent
    useEffect(() => {
       if (current && conversation) {
@@ -74,9 +79,7 @@ const ConversationItem = ({ conversation }) => {
                messageContext.messages.length > 0
             ) {
                //Set Recent Message To Most Recently Sent Message
-               setRecentMessage(
-                  messageContext.messages[messageContext.messages.length - 1]
-               );
+               setRecentMessage(messages[messages.length - 1]);
             }
          }
       }
@@ -98,7 +101,6 @@ const ConversationItem = ({ conversation }) => {
    }, [current?.users]);
 
    //Helper Function To Find Most Recent Message That Wasn't Sent By You
-   //TODO: Fix Issue Regarding Messages Not Having Sender
    const findRecentMessage = () => {
       if (messages) {
          for (let i = messages.length - 1; i >= 0; i--) {
@@ -138,16 +140,20 @@ const ConversationItem = ({ conversation }) => {
                      )}
                   </h3>
                   <p className="text-gray-600 text-s transition-transform duration-1000 ease-in">
-                     {recentMessage != null ? recentMessage.content : ""}
+                     {recentMessage.content && recentMessage.content.length > 50
+                        ? recentMessage.content.substring(0, 50) + "..."
+                        : recentMessage.content}
                   </p>
                </div>
-               {/* @TODO Consider Using a React Moment To Format Date AND Time */}
                <p className="text-gray-600 text-xs transition-transform duration-1000 ease-in ">
-                  {recentMessage?.sendDate
-                     ? new Date(recentMessage.sendDate).toLocaleDateString() +
-                       " " +
-                       new Date(recentMessage.sendDate).toLocaleTimeString()
-                     : ""}
+                  {console.log(recentMessage)}
+                  {recentMessage.sendDate &&
+                     new Date(recentMessage.sendDate).toLocaleDateString() +
+                        " " +
+                        new Date(recentMessage.sendDate).toLocaleTimeString()}
+                  {pinned === conversation_id && (
+                     <i className="fa-solid fa-star text-lg ml-2 text-yellow-400"></i>
+                  )}
                </p>
             </div>
          </div>

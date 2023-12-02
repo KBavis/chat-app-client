@@ -11,11 +11,11 @@ import {
    CONVERSATION_ERROR,
    LEAVE_CONVERSATION,
    ADD_USER,
+   PIN_CONVERSATION,
 } from "./types";
 
 export default (state, action) => {
    switch (action.type) {
-      //@TODO Filter Based On Message Content Or Other Parameters
       case FILTER_CONVERSATIONS:
          return {
             ...state,
@@ -88,6 +88,20 @@ export default (state, action) => {
          return {
             ...state,
             loading: true,
+         };
+      case PIN_CONVERSATION:
+         const pinnedConversation = state.conversations.find(
+            (convo) => convo.conversation_id === action.payload
+         );
+
+         const filteredConversations = state.conversations.filter(
+            (convo) => convo.conversation_id !== action.payload
+         );
+
+         return {
+            ...state,
+            conversations: [pinnedConversation, ...filteredConversations],
+            pinned: action.payload,
          };
       case CLEAR_CONVERSATIONS:
          return {

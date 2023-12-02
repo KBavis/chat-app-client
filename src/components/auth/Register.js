@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import AuthContext from "../../context/auth/authContext";
 import AlertContext from "../../context/alert/alertContext";
 
-//@TODO Add To REST API the need for username/email so a User can login
 const Register = () => {
    const { register, isAuthenticated, error, clearErrors } =
       useContext(AuthContext);
@@ -26,8 +25,6 @@ const Register = () => {
          clearErrors();
       }
    }, [isAuthenticated, error]);
-
-   //@TODO Add OnSubmit to request Registration to REST API
 
    const { name, username, password, password2 } = user;
 

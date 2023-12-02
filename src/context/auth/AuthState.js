@@ -18,9 +18,6 @@ import {
 } from "./types";
 import AlertContext from "../alert/alertContext";
 
-{
-   /* @TODO: Change user to null and set up loadUser */
-}
 const AuthState = (props) => {
    const initalState = {
       token: null,

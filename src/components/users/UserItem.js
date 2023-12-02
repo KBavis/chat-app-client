@@ -4,7 +4,7 @@ import UserContext from "../../context/users/userContext";
 import ConversationsContext from "../../context/conversations/conversationContext";
 import AlertContext from "../../context/alert/alertContext";
 
-const UserItem = ({ user, onClose, isCreateConversation }) => {
+const UserItem = ({ user, onClose, isCreateConversation, setMenuOpen }) => {
    const { profileImage } = user;
    const {
       createConversation,
@@ -41,6 +41,7 @@ const UserItem = ({ user, onClose, isCreateConversation }) => {
          } else {
             setAlert("User succesfully added to conversation", "success");
          }
+         setMenuOpen(false);
          onClose();
       }
    };

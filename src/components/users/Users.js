@@ -3,7 +3,7 @@ import UserContext from "../../context/users/userContext";
 import UserItem from "./UserItem";
 import FilterUsers from "./FilterUsers";
 
-const Users = ({ onClose, isCreateConversation }) => {
+const Users = ({ onClose, isCreateConversation, setMenuOpen }) => {
    const { users, filtered } = useContext(UserContext);
 
    return users ? (
@@ -22,6 +22,7 @@ const Users = ({ onClose, isCreateConversation }) => {
                        user={user}
                        onClose={onClose}
                        isCreateConversation={isCreateConversation}
+                       setMenuOpen={setMenuOpen}
                     />
                  ))
                : users &&
@@ -31,6 +32,7 @@ const Users = ({ onClose, isCreateConversation }) => {
                        user={user}
                        onClose={onClose}
                        isCreateConversation={isCreateConversation}
+                       setMenuOpen={setMenuOpen}
                     />
                  ))}
          </div>

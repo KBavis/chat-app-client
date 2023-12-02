@@ -19,15 +19,16 @@ import {
    CLEAR_CONVERSATIONS,
    LEAVE_CONVERSATION,
    ADD_CONVERSATION,
+   PIN_CONVERSATION,
 } from "./types";
 import { ADD_USER } from "../users/types";
 const ConversationsState = (props) => {
-   //@TODO Add property 'image' to the conversation.users object, and set this image to be conversation image based on sender of recent message
    const initalState = {
       conversations: null,
       current: null,
       filtered: null,
       loading: false,
+      pinned: null,
    };
 
    const [state, dispatch] = useReducer(conversationReducer, initalState);
@@ -151,6 +152,15 @@ const ConversationsState = (props) => {
       }
    };
 
+   //Pin Conversation
+   const pinConversation = (id) => {
+      dispatch({
+         type: PIN_CONVERSATION,
+
+         payload: id,
+      });
+   };
+
    return (
       <ConversationsContext.Provider
          value={{
@@ -158,6 +168,7 @@ const ConversationsState = (props) => {
             conversations: state.conversations,
             current: state.current,
             filtered: state.filtered,
+            pinned: state.pinned,
             //functions
             filterConversations,
             clearFilter,
@@ -169,6 +180,7 @@ const ConversationsState = (props) => {
             leaveConversation,
             createConversation,
             addUser,
+            pinConversation,
          }}
       >
          {props.children};

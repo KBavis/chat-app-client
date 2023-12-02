@@ -79,7 +79,6 @@ const TopBar = () => {
       return null;
    };
 
-   //@TODO: Make It So Each Users Name Is Clickable (i.e Click That User Will Bring You To That User's Profile)
    return current ? (
       <div className="relative">
          <div className="flex items-center">

@@ -42,7 +42,6 @@ const ProfileBrief = (props) => {
                   className="fa-solid fa-pen text-gray-500 transition-opacity hover:opacity-70 cursor-pointer"
                ></i>
             </div>
-            {/* @TODO: Change this to a title */}
             <h2 className="font-light text-md text-gray-500">{userName}</h2>
          </div>
          <UserProfile

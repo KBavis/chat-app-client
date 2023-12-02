@@ -3,7 +3,6 @@ import AuthContext from "../../context/auth/authContext";
 import AlertContext from "../../context/alert/alertContext";
 import { useNavigate } from "react-router-dom";
 
-//@TOOD Add Username/Email Attribute To The REST API for Register/Logging In
 const Login = () => {
    const navigate = useNavigate();
    const { loginUser, error, isAuthenticated, clearErrors } =
@@ -13,8 +12,6 @@ const Login = () => {
       username: "",
       password: "",
    });
-
-   //@TODO Add On Submit To Make a Request to API
 
    const { username, password } = user;
 

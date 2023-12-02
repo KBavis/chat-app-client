@@ -4,6 +4,7 @@ import MessageContext from "../../context/messages/messageContext";
 import AuthContext from "../../context/auth/authContext";
 import ConversationsContext from "../../context/conversations/conversationContext";
 import Loading from "../layout/Loading";
+import AlertContext from "../../context/alert/alertContext";
 
 const Messages = () => {
    const {
@@ -19,16 +20,20 @@ const Messages = () => {
    const conversationContext = useContext(ConversationsContext);
    const [text, setText] = useState("");
    const messagesRef = useRef(null);
+   const { setAlert } = useContext(AlertContext);
 
    const onChange = (e) => {
       setText(e.target.value);
    };
 
    const onSubmit = (e) => {
-      console.log("Send Message Clicked");
       e.preventDefault();
       if (text === "") {
-         //@TODO Configure An Alert To Inform User
+         setAlert("Unable to send a blank message", "danger");
+         return;
+      } else if (text.length > 300) {
+         setAlert("Max message size is 300 characters", "danger");
+         return;
       }
       const newMessage = {
          content: text,
