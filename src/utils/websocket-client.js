@@ -1,10 +1,13 @@
+// import { useContext } from "react";
+// import MessageContext from "../context/messages/messageContext";
 const SockJS = require("sockjs-client");
 const Stomp = require("stompjs");
 
 // Maintain a collection of stomp clients for different conversations
 const stompClients = {};
 
-const subscribeToConversation = async (conversation_id) => {
+const subscribeToConversation = async (conversation_id, messageHandler) => {
+   // const { messages, recieveMessage } = useContext(MessageContext);
    // Check if stomp client for the conversation already exists
    if (!stompClients[conversation_id]) {
       const socket = new SockJS("/connect");
@@ -19,6 +22,8 @@ const subscribeToConversation = async (conversation_id) => {
 
             // Subscribe to the specific conversation topic
             stompClient.subscribe(subscriptionUrl, (message) => {
+               //Call the callback function
+               messageHandler(message.body, conversation_id);
                // Push message into frontend
                console.log(
                   `Received message for conversation ${conversation_id}:`,

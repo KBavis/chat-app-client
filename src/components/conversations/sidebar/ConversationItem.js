@@ -59,7 +59,7 @@ const ConversationItem = ({ conversation }) => {
          console.log(
             "Attemtping To Subsribe To Conversation: " + conversation_id
          );
-         await subsribeToConversation(conversation_id);
+         await subsribeToConversation(conversation_id, handleRecievedMessage);
       };
       subscribe();
    }, []);
@@ -118,6 +118,11 @@ const ConversationItem = ({ conversation }) => {
          }
       }
       return null;
+   };
+
+   //Callback Function To Handle Recieved Messages
+   const handleRecievedMessage = (conversation_id) => {
+      messageContext.recieveMessage(conversation_id);
    };
 
    return (

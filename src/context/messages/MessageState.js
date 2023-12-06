@@ -74,10 +74,13 @@ const MessageState = (props) => {
       }
    };
 
-   const recieveMessage = (convoId, message) => {
+   //Message Recieved
+   //@TODO: Ensure This Logic Is Updated In Backend So Its a MessageResponseDTO rather than MessageDTO
+   //@TODO: Remove The Logic of Fetching Recent Message Of Conversation In Backend If Not Used Here
+   const recieveMessage = async (message) => {
       dispatch({
          type: RECIEVE_MESSAGE,
-         payload: [convoId, message],
+         payload: message,
       });
    };
 

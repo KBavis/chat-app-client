@@ -6,6 +6,7 @@ import {
    CLEAR_MESSAGES,
    MESSAGE_ERROR,
    SET_LOADING,
+   RECIEVE_MESSAGE,
 } from "./types";
 
 export default (state, action) => {
@@ -34,6 +35,11 @@ export default (state, action) => {
             filtered: null,
             current: null,
             messages: null,
+         };
+      case RECIEVE_MESSAGE:
+         return {
+            ...state,
+            messages: [...state.messages, action.payload],
          };
       case MESSAGE_ERROR:
          return {

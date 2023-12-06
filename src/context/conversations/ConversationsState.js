@@ -22,6 +22,7 @@ import {
    PIN_CONVERSATION,
 } from "./types";
 import { ADD_USER } from "../users/types";
+import { RECIEVE_MESSAGE } from "../messages/types";
 const ConversationsState = (props) => {
    const initalState = {
       conversations: null,
