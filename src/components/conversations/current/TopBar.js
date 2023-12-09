@@ -34,7 +34,7 @@ const TopBar = () => {
          if (messages && messageContext.length > 0) {
             //Ensure That Auth User Is Not Sender
             if (messages[messages.length - 1].sender !== user.user_id) {
-               setCurrImage(messages[messages.length - 1].sender.profileImage);
+               setCurrImage(messages[messages.length - 1].sender?.profileImage);
                console.log("1");
             }
          } else {
@@ -42,9 +42,9 @@ const TopBar = () => {
             if (
                messages &&
                messages.length > 0 &&
-               messages[messages.length - 1].sender.user_id !== user.user_id
+               messages[messages.length - 1].sender?.user_id !== user.user_id
             ) {
-               setCurrImage(messages[messages.length - 1].sender.profileImage);
+               setCurrImage(messages[messages.length - 1].sender?.profileImage);
                console.log("2");
             } else {
                //Set Image To Most Recent Message That Was Not Sent By You
@@ -71,8 +71,19 @@ const TopBar = () => {
    const findRecentMessage = () => {
       if (messages) {
          for (let i = messages.length - 1; i >= 0; i--) {
-            if (messages[i].sender.user_id !== user.user_id) {
-               return messages[i];
+            const senderId = messages[i].senderId;
+            const senderUserId = messages[i].sender?.user_id;
+
+            // Check for existence of senderId or sender.user_id and return the message
+            if (senderId !== undefined || senderUserId !== undefined) {
+               if (senderId !== undefined && senderId !== user.user_id) {
+                  return messages[i];
+               } else if (
+                  senderUserId !== undefined &&
+                  senderUserId !== user.user_id
+               ) {
+                  return messages[i];
+               }
             }
          }
       }

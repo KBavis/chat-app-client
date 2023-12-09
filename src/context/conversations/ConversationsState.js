@@ -20,9 +20,10 @@ import {
    LEAVE_CONVERSATION,
    ADD_CONVERSATION,
    PIN_CONVERSATION,
+   RECIEVE_MESSAGE,
+   SET_RECENT_CONVERSATION,
 } from "./types";
 import { ADD_USER } from "../users/types";
-import { RECIEVE_MESSAGE } from "../messages/types";
 const ConversationsState = (props) => {
    const initalState = {
       conversations: null,
@@ -30,6 +31,7 @@ const ConversationsState = (props) => {
       filtered: null,
       loading: false,
       pinned: null,
+      recentConversation: null,
    };
 
    const [state, dispatch] = useReducer(conversationReducer, initalState);
@@ -162,6 +164,60 @@ const ConversationsState = (props) => {
       });
    };
 
+   //Recieve Message
+   const recieveMessage = (message, conversationId) => {
+      const msg = JSON.parse(message);
+
+      // Find the conversation in the conversations array
+      // const updatedConversations = state.conversations.map((conversation) => {
+      //    console.log(`Conversation`)
+      //    if (conversation.conversation_id === conversationId) {
+      //       // Append the new message to the messages array of the matched conversation
+      //       return {
+      //          ...conversation,
+      //          messages: [...conversation.messages, msg],
+      //       };
+      //    }
+      //    return conversation; // Return other conversations unchanged
+      // });
+
+      // Dispatch the updated conversations to the reducer
+      // dispatch({
+      //    type: RECIEVE_MESSAGE,
+      //    payload: updatedConversations,
+      // });
+
+      // Find the index of the conversation in the conversations array
+      const conversationIndex = state.conversations.findIndex(
+         (conversation) => conversation.conversation_id === conversationId
+      );
+
+      if (conversationIndex !== -1) {
+         // Create a new array to avoid mutating the original state
+         const updatedConversations = [...state.conversations];
+
+         // Update the specific conversation with the new message
+         updatedConversations[conversationIndex] = {
+            ...updatedConversations[conversationIndex],
+            messages: [
+               ...updatedConversations[conversationIndex].messages,
+               msg,
+            ],
+         };
+
+         // Dispatch the updated conversation to the reducer
+         dispatch({
+            type: SET_RECENT_CONVERSATION,
+            payload: updatedConversations[conversationIndex],
+         });
+      }
+
+      // dispatch({
+      //    type: SET_RECENT_CONVERSATION,
+      //    payload: updatedConversations,
+      // });
+   };
+
    return (
       <ConversationsContext.Provider
          value={{
@@ -170,6 +226,7 @@ const ConversationsState = (props) => {
             current: state.current,
             filtered: state.filtered,
             pinned: state.pinned,
+            recentConversation: state.recentConversation,
             //functions
             filterConversations,
             clearFilter,
@@ -182,6 +239,7 @@ const ConversationsState = (props) => {
             createConversation,
             addUser,
             pinConversation,
+            recieveMessage,
          }}
       >
          {props.children};

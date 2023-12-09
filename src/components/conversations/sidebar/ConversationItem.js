@@ -13,6 +13,7 @@ const ConversationItem = ({ conversation }) => {
       current,
       conversations,
       pinned,
+      recieveMessage,
    } = useContext(ConversationsContext);
 
    const { user } = useContext(AuthContext);
@@ -22,12 +23,19 @@ const ConversationItem = ({ conversation }) => {
    const [recentMessage, setRecentMessage] = useState({});
    const [currImg, setCurrImage] = useState(def);
    const messageContext = useContext(MessageContext);
+   const [currentConversation, setCurrentConversation] = useState({});
 
    const { conversation_id, users, messages, conversationStart } = conversation;
 
    const onClick = () => {
       setCurrent(conversation);
    };
+
+   useEffect(() => {
+      console.log(`Current Updated:`);
+      console.log(current);
+      setCurrentConversation(current);
+   }, [current]);
 
    //Set Recent Message, Conversation Users, And Conversation Image
    useEffect(() => {
@@ -55,6 +63,7 @@ const ConversationItem = ({ conversation }) => {
       }
 
       //Subscribe to each conversation for real-time functionality
+      //@TODO: Move this logic to seperate user effect that only executes when more conversations are created
       const subscribe = async () => {
          console.log(
             "Attemtping To Subsribe To Conversation: " + conversation_id
@@ -121,8 +130,9 @@ const ConversationItem = ({ conversation }) => {
    };
 
    //Callback Function To Handle Recieved Messages
-   const handleRecievedMessage = (conversation_id) => {
-      messageContext.recieveMessage(conversation_id);
+   //@TODO Change this logic to be by Conversation
+   const handleRecievedMessage = (message, conversation_id) => {
+      recieveMessage(message, conversation_id);
    };
 
    return (

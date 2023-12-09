@@ -5,6 +5,7 @@ import AuthContext from "../../context/auth/authContext";
 import ConversationsContext from "../../context/conversations/conversationContext";
 import Loading from "../layout/Loading";
 import AlertContext from "../../context/alert/alertContext";
+import UserContext from "../../context/users/userContext";
 
 const Messages = () => {
    const {
@@ -18,9 +19,12 @@ const Messages = () => {
    } = useContext(MessageContext);
    const { user } = useContext(AuthContext);
    const conversationContext = useContext(ConversationsContext);
+   const { users } = useContext(UserContext);
    const [text, setText] = useState("");
+   const [recentMessage, setRecentMessage] = useState({});
    const messagesRef = useRef(null);
    const { setAlert } = useContext(AlertContext);
+   const [conversationMessages, setConversationMessages] = useState(null);
 
    const onChange = (e) => {
       setText(e.target.value);
@@ -56,6 +60,50 @@ const Messages = () => {
       }
    }, [conversationContext.current]);
 
+   useEffect(() => {
+      setConversationMessages(messages);
+   }, [messages]);
+
+   useEffect(() => {}, [messages?.length, conversationMessages]);
+
+   //Recieving A New Message Logic
+   useEffect(() => {
+      if (
+         conversationContext.recentConversation &&
+         conversationContext.recentConversation.messages
+      ) {
+         const recentConvoMessages =
+            conversationContext.recentConversation.messages;
+         const latestRecentMessage =
+            recentConvoMessages[recentConvoMessages.length - 1];
+
+         setRecentMessage(latestRecentMessage);
+
+         if (
+            conversationContext.current &&
+            conversationContext.current.conversation_id ===
+               latestRecentMessage.conversationId
+         ) {
+            //Fetch Profile Image for This Message
+            let user = users.filter(
+               (u) => u.user_id === latestRecentMessage.senderId
+            );
+
+            const updatedLatestMessage = {
+               ...latestRecentMessage,
+               sender: {
+                  profileImage: user[0].profileImage,
+               },
+            };
+
+            setConversationMessages((prevConversationMessages) => [
+               ...(prevConversationMessages || []),
+               updatedLatestMessage,
+            ]);
+         }
+      }
+   }, [conversationContext.recentConversation]);
+
    if (loading == true) {
       return <Loading></Loading>;
    }
@@ -69,15 +117,26 @@ const Messages = () => {
          >
             {/* Flex Col Causes The Messages To Descend Vertically */}
             <div className="flex flex-col space-y-2">
-               {messages !== null &&
-                  messages.map((message) => (
-                     <ChatMessage
-                        key={message.message_id}
-                        text={message.content}
-                        sentByUser={user.user_id === message.sender.user_id}
-                        message={message}
-                     />
-                  ))}
+               {conversationMessages !== null &&
+                  conversationMessages.map((message) => {
+                     if (typeof message === "string")
+                        message = JSON.parse(message);
+                     return (
+                        <ChatMessage
+                           key={message.message_id}
+                           text={message.content}
+                           sentByUser={
+                              user.user_id ===
+                              (message.senderId
+                                 ? message.senderId
+                                 : message.sender
+                                 ? message.sender.user_id
+                                 : null)
+                           }
+                           message={message}
+                        />
+                     );
+                  })}
             </div>
          </div>
          <div className="flex p-4 border-t">

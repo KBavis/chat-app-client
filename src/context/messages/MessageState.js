@@ -1,8 +1,9 @@
-import { useReducer } from "react";
+import { useReducer, useContext } from "react";
 import messageReducer from "./messageReducer";
 import MessageContext from "./messageContext";
 import setAuthToken from "../../utils/setAuthToken";
 import axios from "axios";
+import ConversationsContext from "../conversations/conversationContext";
 import {
    SEND_MESSAGE,
    DELETE_MESSAGE,
@@ -13,7 +14,7 @@ import {
    SET_LOADING,
    RECIEVE_MESSAGE,
 } from "./types";
-import { DELETE_CONVERSATION } from "../conversations/types";
+import AuthContext from "../auth/authContext";
 
 const MessageState = (props) => {
    const initalState = {
@@ -21,6 +22,8 @@ const MessageState = (props) => {
       loading: false,
       filtered: null,
    };
+
+   const { user } = useContext(AuthContext);
 
    const [state, dispatch] = useReducer(messageReducer, initalState);
 
@@ -77,11 +80,16 @@ const MessageState = (props) => {
    //Message Recieved
    //@TODO: Ensure This Logic Is Updated In Backend So Its a MessageResponseDTO rather than MessageDTO
    //@TODO: Remove The Logic of Fetching Recent Message Of Conversation In Backend If Not Used Here
-   const recieveMessage = async (message) => {
-      dispatch({
-         type: RECIEVE_MESSAGE,
-         payload: message,
-      });
+   const recieveMessage = async (message, conversation_id, messages) => {
+      let msg = JSON.parse(message);
+      if (msg.senderId !== user.user_id) {
+         console.log(messages);
+
+         dispatch({
+            type: RECIEVE_MESSAGE,
+            payload: msg,
+         });
+      }
    };
 
    //Delete Message

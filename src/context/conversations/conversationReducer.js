@@ -1,4 +1,3 @@
-import { act } from "react-dom/test-utils";
 import {
    CLEAR_FILTER,
    FILTER_CONVERSATIONS,
@@ -12,6 +11,8 @@ import {
    LEAVE_CONVERSATION,
    ADD_USER,
    PIN_CONVERSATION,
+   RECIEVE_MESSAGE,
+   SET_RECENT_CONVERSATION,
 } from "./types";
 
 export default (state, action) => {
@@ -58,6 +59,7 @@ export default (state, action) => {
             };
          }
       case GET_USER_CONVERSATIONS:
+      case RECIEVE_MESSAGE:
          return {
             ...state,
             conversations: action.payload,
@@ -109,6 +111,11 @@ export default (state, action) => {
             conversations: null,
             current: null,
             filtered: null,
+         };
+      case SET_RECENT_CONVERSATION:
+         return {
+            ...state,
+            recentConversation: action.payload,
          };
       case CONVERSATION_ERROR:
          return {
