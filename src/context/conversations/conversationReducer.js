@@ -13,6 +13,7 @@ import {
    PIN_CONVERSATION,
    RECIEVE_MESSAGE,
    SET_RECENT_CONVERSATION,
+   SET_RECENT_MESSAGE,
 } from "./types";
 
 export default (state, action) => {
@@ -113,9 +114,16 @@ export default (state, action) => {
             filtered: null,
          };
       case SET_RECENT_CONVERSATION:
+         console.log("IN SET_RECENT_CONVERSATION WITH PAYLOAD:");
+         console.log(action.payload);
          return {
             ...state,
             recentConversation: action.payload,
+         };
+      case SET_RECENT_MESSAGE:
+         return {
+            ...state,
+            recent: action.payload,
          };
       case CONVERSATION_ERROR:
          return {

@@ -14,6 +14,7 @@ const Conversations = () => {
       setCurrent,
       current,
       getUserConversations,
+      recentConversation,
    } = useContext(ConversationsContext);
 
    const { messages } = useContext(MessageContext);

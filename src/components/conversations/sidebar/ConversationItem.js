@@ -12,8 +12,10 @@ const ConversationItem = ({ conversation }) => {
       clearCurrent,
       current,
       conversations,
+      recentConversation,
       pinned,
       recieveMessage,
+      recent,
    } = useContext(ConversationsContext);
 
    const { user } = useContext(AuthContext);
@@ -24,6 +26,7 @@ const ConversationItem = ({ conversation }) => {
    const [currImg, setCurrImage] = useState(def);
    const messageContext = useContext(MessageContext);
    const [currentConversation, setCurrentConversation] = useState({});
+   const [isRecentConversation, setIsRecentConversation] = useState({});
 
    const { conversation_id, users, messages, conversationStart } = conversation;
 
@@ -31,16 +34,40 @@ const ConversationItem = ({ conversation }) => {
       setCurrent(conversation);
    };
 
+   /**
+    *  1) we need to update the conversation item recent message when one
+    *       - Logic has shifted so that a RECIEVED MESSAGE will be put into the CONVERSATION STATE that has SAME CONVERSATION ID as Message Recieved
+    *       - Due to this, we need to find the associated Conversation in Conversation State, And Update Our Profile Image and Our Recent Message Based On These Updates
+    *       - We Need To Steal Logic From Messages To Updates The Profile Image, Since This Wont Be In State
+    *
+    **/
+
+   /**
+    * Determine If This Conversation Is The Recently Updated Conversation
+    */
+
+   /**
+    *  Set Current Conversation Based on Newly Clicked Conversation
+    */
    useEffect(() => {
-      console.log(`Current Updated:`);
-      console.log(current);
       setCurrentConversation(current);
    }, [current]);
 
+   useEffect(() => {
+      console.log(
+         "//////////////// ----- RECENT MESSAGE UPDATED ----- ///////////"
+      );
+      console.log("FOR CONVERSATION: ");
+      console.log(conversation);
+      console.log(recentMessage);
+   }, [recentMessage]);
+
+   useEffect(() => {
+      setRecentMessage(recent);
+   }, [recent]);
+
    //Set Recent Message, Conversation Users, And Conversation Image
    useEffect(() => {
-      //Fetch Conversation Messages
-
       //Set Recent Message
       if (messages && messages.length > 0) {
          setRecentMessage(messages[messages.length - 1]);
@@ -89,18 +116,74 @@ const ConversationItem = ({ conversation }) => {
 
    //Update Recent Message When Another Is Sent
    useEffect(() => {
+      let mostRecent = null;
       if (current && conversation) {
          if (current.conversation_id === conversation.conversation_id) {
             if (
                messageContext.messages !== null &&
                messageContext.messages.length > 0
             ) {
-               //Set Recent Message To Most Recently Sent Message
-               setRecentMessage(messages[messages.length - 1]);
+               //Extract Recent Message From MessageContext
+               let recentMessageMsgContext =
+                  messageContext.messages[messageContext.messages.length - 1];
+
+               console.log("----MOST RECENT MESSAGE SENT-----");
+               console.log(recentMessageMsgContext);
+               console.log("----RECENT CONVERSATION---");
+               console.log(recentConversation);
+               console.log("----RECENT CONVERSATION ID -----");
+               console.log(recentConversation?.conversation_id);
+               console.log("-----CONVERSATION IN THIS ITEM ID----");
+               console.log(conversation.conversation_id);
+               if (
+                  recentConversation &&
+                  recentConversation.messages &&
+                  recentConversation.conversation_id ===
+                     conversation.conversation_id &&
+                  recentConversation.messages.length > 0
+               ) {
+                  //Extract Recent Message From Recent Conversation
+                  let recentConvoMessage =
+                     recentConversation.messages[
+                        recentConversation.messages.length - 1
+                     ];
+                  console.log("----RECENT CONVO MESSAGE---");
+                  console.log(recentConvoMessage);
+                  const messageDate =
+                     recentMessageMsgContext && recentMessageMsgContext.sendDate
+                        ? new Date(recentMessageMsgContext.sendDate)
+                        : new Date("2000-01-01");
+                  console.log("---RECENT MESSAGE DATE----");
+                  console.log(messageDate);
+
+                  const convoDate =
+                     recentConvoMessage && recentConvoMessage.sendDate
+                        ? new Date(recentConvoMessage.sendDate)
+                        : new Date("2000-01-01");
+                  console.log("---RECENT CONVERSATION DATE----");
+                  console.log(convoDate);
+
+                  mostRecent =
+                     messageDate >= convoDate
+                        ? recentMessageMsgContext
+                        : recentConvoMessage;
+                  console.log("RECENT MESSAGE");
+                  console.log(mostRecent);
+               }
+
+               mostRecent =
+                  mostRecent === null ? recentMessageMsgContext : mostRecent;
+               console.log("-------MOST RECENT-------");
+               console.log(mostRecent);
+               setRecentMessage(mostRecent);
             }
          }
       }
-   }, [messageContext.messages]);
+   }, [
+      messageContext.messages?.length,
+      recentConversation,
+      conversation.conversation_id,
+   ]);
 
    //Update List of Conversation Users When a User Added
    useEffect(() => {
@@ -138,7 +221,7 @@ const ConversationItem = ({ conversation }) => {
    return (
       <div
          onClick={onClick}
-         className="w-full flex mt-6 py-2 hover:cursor-pointer hover:scale-105 hover:bg-slate-200 "
+         className="w-full flex mt-6 py-2 px-2 hover:cursor-pointer hover:scale-105 hover:bg-slate-200 "
       >
          <div className="flex items-center mr-6">
             <img

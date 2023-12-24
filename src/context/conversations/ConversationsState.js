@@ -22,6 +22,7 @@ import {
    PIN_CONVERSATION,
    RECIEVE_MESSAGE,
    SET_RECENT_CONVERSATION,
+   SET_RECENT_MESSAGE,
 } from "./types";
 import { ADD_USER } from "../users/types";
 const ConversationsState = (props) => {
@@ -32,6 +33,7 @@ const ConversationsState = (props) => {
       loading: false,
       pinned: null,
       recentConversation: null,
+      recent: null,
    };
 
    const [state, dispatch] = useReducer(conversationReducer, initalState);
@@ -168,25 +170,6 @@ const ConversationsState = (props) => {
    const recieveMessage = (message, conversationId) => {
       const msg = JSON.parse(message);
 
-      // Find the conversation in the conversations array
-      // const updatedConversations = state.conversations.map((conversation) => {
-      //    console.log(`Conversation`)
-      //    if (conversation.conversation_id === conversationId) {
-      //       // Append the new message to the messages array of the matched conversation
-      //       return {
-      //          ...conversation,
-      //          messages: [...conversation.messages, msg],
-      //       };
-      //    }
-      //    return conversation; // Return other conversations unchanged
-      // });
-
-      // Dispatch the updated conversations to the reducer
-      // dispatch({
-      //    type: RECIEVE_MESSAGE,
-      //    payload: updatedConversations,
-      // });
-
       // Find the index of the conversation in the conversations array
       const conversationIndex = state.conversations.findIndex(
          (conversation) => conversation.conversation_id === conversationId
@@ -210,6 +193,14 @@ const ConversationsState = (props) => {
             type: SET_RECENT_CONVERSATION,
             payload: updatedConversations[conversationIndex],
          });
+
+         let messages = updatedConversations[conversationIndex].messages;
+         let recentMessage = messages[messages.length - 1];
+
+         dispatch({
+            type: SET_RECENT_MESSAGE,
+            payload: recentMessage,
+         });
       }
 
       // dispatch({
@@ -227,6 +218,7 @@ const ConversationsState = (props) => {
             filtered: state.filtered,
             pinned: state.pinned,
             recentConversation: state.recentConversation,
+            recent: state.recent,
             //functions
             filterConversations,
             clearFilter,

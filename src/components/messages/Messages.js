@@ -19,16 +19,25 @@ const Messages = () => {
    } = useContext(MessageContext);
    const { user } = useContext(AuthContext);
    const conversationContext = useContext(ConversationsContext);
+
    const { users } = useContext(UserContext);
    const [text, setText] = useState("");
    const [recentMessage, setRecentMessage] = useState({});
    const messagesRef = useRef(null);
    const { setAlert } = useContext(AlertContext);
    const [conversationMessages, setConversationMessages] = useState(null);
+   const [messageIds, setMessageIds] = useState([]);
 
    const onChange = (e) => {
       setText(e.target.value);
    };
+
+   /**
+    *  Clears Converastion Messages When New Conversation Opened (To Cause Re-Render)
+    */
+   useEffect(() => {
+      setConversationMessages(null);
+   }, [conversationContext.current]);
 
    const onSubmit = (e) => {
       e.preventDefault();
@@ -47,12 +56,16 @@ const Messages = () => {
       setText("");
    };
 
+   //Ensures That We Are Automatically Viewing mOst Recent Message
    useEffect(() => {
       if (messagesRef.current) {
          messagesRef.current.scrollTo(0, messagesRef.current.scrollHeight);
       }
    }, [messages]);
 
+   /**
+    * Fetch Messages Upon Changing Conversations
+    */
    useEffect(() => {
       if (conversationContext.current !== null) {
          setLoading();
@@ -60,14 +73,43 @@ const Messages = () => {
       }
    }, [conversationContext.current]);
 
+   //Updates Our Conversation Mesage When We Change Current Conversation
    useEffect(() => {
-      setConversationMessages(messages);
+      console.log(conversationMessages);
+      //On Initial Render, We Should Update State With Messages From Our
+      if (!conversationMessages || conversationMessages.length == 0) {
+         setConversationMessages(messages);
+         let msgIds = null;
+         if (messages && messages.length > 0) {
+            msgIds = messages.map((m) => {
+               return m.message_id;
+            });
+         }
+         setMessageIds(msgIds);
+      } else {
+         let messageToAdd = messages[messages.length - 1];
+         let isPresent = false;
+         //If Message Already In Conversation Messages (Ensures We Don't Add Message Twice)
+         for (let i = 0; i < messageIds.length; i++) {
+            if (messageToAdd.message_id === messageIds[i]) {
+               isPresent = true;
+            }
+         }
+         if (!isPresent) {
+            setConversationMessages([
+               ...conversationMessages,
+               messages[messages.length - 1],
+            ]);
+         }
+      }
    }, [messages]);
 
    useEffect(() => {}, [messages?.length, conversationMessages]);
 
-   //Recieving A New Message Logic
+   //Recieving A New Message
    useEffect(() => {
+      console.log("WE HAVE RECEIVED A NEW MESSAGE");
+      console.log(conversationContext.recentConversation);
       if (
          conversationContext.recentConversation &&
          conversationContext.recentConversation.messages
@@ -85,21 +127,28 @@ const Messages = () => {
                latestRecentMessage.conversationId
          ) {
             //Fetch Profile Image for This Message
-            let user = users.filter(
+            let foundUser = users.filter(
                (u) => u.user_id === latestRecentMessage.senderId
             );
 
+            //Updating Latest Message Profile Image For Sender
             const updatedLatestMessage = {
                ...latestRecentMessage,
                sender: {
-                  profileImage: user[0].profileImage,
+                  profileImage: foundUser[0]?.profileImage,
                },
             };
 
-            setConversationMessages((prevConversationMessages) => [
-               ...(prevConversationMessages || []),
-               updatedLatestMessage,
-            ]);
+            console.log("UPDATED LATES TMESSGES");
+            console.log(updatedLatestMessage);
+
+            //Ensuring That We Don't Render Auth User Mesasge Twice
+            if (user.user_id !== latestRecentMessage.senderId) {
+               setConversationMessages((prevConversationMessages) => [
+                  ...(prevConversationMessages || []),
+                  updatedLatestMessage,
+               ]);
+            }
          }
       }
    }, [conversationContext.recentConversation]);

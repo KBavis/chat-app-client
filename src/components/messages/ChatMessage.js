@@ -1,17 +1,47 @@
+import ConversationsContext from "../../context/conversations/conversationContext";
 import MessageContext from "../../context/messages/messageContext";
 import dayDifference from "../../utils/dateUtil";
 import { useContext, useEffect, useState } from "react";
 
 const ChatMessage = ({ text, sentByUser, message }) => {
    const { messages } = useContext(MessageContext);
+   const { conversations } = useContext(ConversationsContext);
    const [displayDate, setDisplayDate] = useState(false);
 
    useEffect(() => {
-      setDisplayDate(showDate());
+      setDisplayDate(showDateMessages() || showDateConversations());
    }, [message]);
 
-   const showDate = () => {
-      if (messages.length == 0) {
+   const showDateConversations = () => {
+      // if (!conversations || conversations.length == 0) {
+      //    return false;
+      // } else if (conversations.length > 0) {
+      //    //Fetch Conversation Associated WIth Message
+      //    console.log(message.conversation);
+      //    let convo = conversations.filter((convo) => {
+      //       return (
+      //          convo.conversation_id === message.conversation.conversation_id
+      //       );
+      //    });
+      //    if (convo) {
+      //       if (
+      //          convo.messages &&
+      //          convo.messages.length === 1 &&
+      //          convo.messages[0].message_id === message.message_id
+      //       ) {
+      //          return true;
+      //       } else {
+      //          const lastMessageSent =
+      //             convo.messages[convo.messages.length - 1];
+      //          const lastMesageDate = new Date(lastMessageSent.sendDate);
+      //          const currentDate = new Date(message.sendDate);
+      //          return dayDifference(lastMesageDate, currentDate);
+      //       }
+      //    }
+      // }
+   };
+   const showDateMessages = () => {
+      if (!messages || messages.length == 0) {
          return false;
       } else if (
          messages.length === 1 ||
