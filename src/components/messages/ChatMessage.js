@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from "react";
 
 const ChatMessage = ({ text, sentByUser, message }) => {
    const { messages } = useContext(MessageContext);
-   const { conversations } = useContext(ConversationsContext);
+   const { conversations, recent } = useContext(ConversationsContext);
    const [displayDate, setDisplayDate] = useState(false);
 
    useEffect(() => {
@@ -13,32 +13,20 @@ const ChatMessage = ({ text, sentByUser, message }) => {
    }, [message]);
 
    const showDateConversations = () => {
-      // if (!conversations || conversations.length == 0) {
-      //    return false;
-      // } else if (conversations.length > 0) {
-      //    //Fetch Conversation Associated WIth Message
-      //    console.log(message.conversation);
-      //    let convo = conversations.filter((convo) => {
-      //       return (
-      //          convo.conversation_id === message.conversation.conversation_id
-      //       );
-      //    });
-      //    if (convo) {
-      //       if (
-      //          convo.messages &&
-      //          convo.messages.length === 1 &&
-      //          convo.messages[0].message_id === message.message_id
-      //       ) {
-      //          return true;
-      //       } else {
-      //          const lastMessageSent =
-      //             convo.messages[convo.messages.length - 1];
-      //          const lastMesageDate = new Date(lastMessageSent.sendDate);
-      //          const currentDate = new Date(message.sendDate);
-      //          return dayDifference(lastMesageDate, currentDate);
-      //       }
-      //    }
-      // }
+      if (recent.message_id === message.message_id) {
+         console.log("THIS IS INDEED TRUE!!!");
+
+         //Determine If This Is The First Message Sent, If So, Return True
+         //@TODO : Update this logic as follows
+         /**
+          *  1) It Needs To Return True If First Message Sent
+          *  2) It Needs To Return True If The Message Prior (Either In MessageContext or Currently) Occured More Than A Day Agop
+          */
+         if (!messages || messages.length === 0) {
+            return true;
+         }
+         return false;
+      }
    };
    const showDateMessages = () => {
       if (!messages || messages.length == 0) {

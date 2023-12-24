@@ -4,26 +4,53 @@ import AlertContext from "../../context/alert/alertContext";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+   /**
+    * =========================
+    * REACT HOOKS
+    * ========================
+    */
    const navigate = useNavigate();
+
+   /**
+    * =========================
+    * CONTEXT AND GLOBAL STATES
+    * ========================
+    */
    const { loginUser, error, isAuthenticated, clearErrors } =
       useContext(AuthContext);
    const { setAlert } = useContext(AlertContext);
+
+   /**
+    * =========================
+    * LOCAL STATES
+    * ========================
+    */
    const [user, setUser] = useState({
       username: "",
       password: "",
    });
 
+   //De-Strucutre Users Local State (Credentials )
    const { username, password } = user;
 
+   //On Change Udpates Local State Holding Value Of Credentials
    const onChange = (e) => {
       setUser({ ...user, [e.target.name]: e.target.value });
    };
 
+   //On Submit Function For Submission of Credentials
    const onSubmit = (e) => {
-      e.preventDefault();
+      e.preventDefault(); //prevent default form submit
+      /**
+       * @TODO: Make This Server Side Error Handling Instead of Client Side Checking
+       *
+       * Ensures Users Enters Username and Password
+       */
       if (username === "" || password == "") {
          setAlert("Please Enter A Username And Password", "danger");
-      } else {
+      }
+      //Attempt To Log User In
+      else {
          loginUser({
             username: username,
             password: password,
@@ -31,17 +58,22 @@ const Login = () => {
       }
    };
 
+   //Load Home Page If User Succesfully Logs In
    useEffect(() => {
       if (isAuthenticated) {
          navigate("/");
       }
+   }, [isAuthenticated]);
 
+   //Set Error On Incorrect Login
+   useEffect(() => {
       if (error) {
          setAlert(error, "danger");
          clearErrors();
       }
-   }, [isAuthenticated, error]);
+   }, [error]);
 
+   //Return Renderable JSX
    return (
       <div className="text-center rounded-xl py-10 my-10 max-w-[450px] m-auto bg-slate-200 border-2 border-slate-400">
          <h1 className="text-3xl pb-8 text-slate-800">

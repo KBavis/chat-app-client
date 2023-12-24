@@ -4,10 +4,27 @@ import AuthContext from "../../context/auth/authContext";
 import AlertContext from "../../context/alert/alertContext";
 
 const Register = () => {
+   /**
+    * =========================
+    * REACT HOOKS
+    * ========================
+    */
+   const navigate = useNavigate();
+
+   /**
+    * =========================
+    * CONTEXT AND GLOBAL STATES
+    * ========================
+    */
    const { register, isAuthenticated, error, clearErrors } =
       useContext(AuthContext);
    const { alerts, setAlert } = useContext(AlertContext);
-   const navigate = useNavigate();
+
+   /**
+    * =========================
+    * LOCAL STATES
+    * ========================
+    */
    const [user, setUser] = useState({
       name: "",
       username: "",
@@ -15,28 +32,45 @@ const Register = () => {
       password2: "",
    });
 
+   //Navigate To Home Page If Succesful Registration
    useEffect(() => {
       if (isAuthenticated) {
          navigate("/");
       }
+   }, [isAuthenticated]);
 
+   //Set Error Alert When Error Registering
+   useEffect(() => {
       if (error) {
          setAlert(error, "danger");
          clearErrors();
       }
-   }, [isAuthenticated, error]);
+   }, [error]);
 
    const { name, username, password, password2 } = user;
 
+   //On Submit Button To Handle New Registration
    const onSubmit = async (e) => {
-      e.preventDefault();
+      e.preventDefault(); //prevent default form submission
       const firstNameLastName = name.split(" ");
+      /**
+       * @TODO Move This Client Side Checking To Server Side Error
+       *
+       * Ensure That Name Is Filled Out
+       */
       if (firstNameLastName[0] === "" || firstNameLastName[1] === "") {
          setAlert("Please Enter A First And LastName", "danger");
       } else if (password !== password2) {
+         /**
+          * @TODO Move This Client Side Checking To Server Side Error
+          *
+          * Ensure That Passwords Match, Or Alert User And Clear Form
+          *  */
          setAlert("Pasword's don't match, please try again", "danger");
          setUser({ ...user, password: "", password2: "" });
-      } else {
+      }
+      //Else, Attempt New Registration
+      else {
          register({
             firstname: firstNameLastName[0],
             lastname: firstNameLastName[1],
@@ -46,10 +80,12 @@ const Register = () => {
       }
    };
 
+   //On Change Function To Update Local States
    const onChange = (e) => {
       setUser({ ...user, [e.target.name]: e.target.value });
    };
 
+   //Return Renderable JSX
    return (
       <div className="text-center rounded-xl py-10 my-10 max-w-[450px] m-auto bg-slate-200 border-2 border-slate-400">
          <h1 className="text-3xl pb-8 text-slate-800">

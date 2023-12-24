@@ -1,25 +1,29 @@
 import React, { Fragment, useContext, useEffect } from "react";
 import ConversationsContext from "../../../context/conversations/conversationContext";
 import ConversationItem from "./ConversationItem";
-import AuthContext from "../../../context/auth/authContext";
 import Loading from "../../layout/Loading";
 import MessageContext from "../../../context/messages/messageContext";
 
+/**
+ *
+ * @returns List of Conversation Items For Sidebar Display
+ */
 const Conversations = () => {
+   /**
+    * ==========================
+    * CONTEXT AND GLOBAL STATES
+    * ==========================
+    */
    const {
       filtered,
       conversations,
       loading,
-      setLoading,
       setCurrent,
       current,
       getUserConversations,
-      recentConversation,
    } = useContext(ConversationsContext);
 
    const { messages } = useContext(MessageContext);
-
-   const { user } = useContext(AuthContext);
 
    //Fetch Authenticated Users Conversations
    useEffect(() => {
@@ -33,6 +37,7 @@ const Conversations = () => {
       }
    }, [conversations, messages]);
 
+   //Return Rendered JSX
    return loading ? (
       <Loading />
    ) : (

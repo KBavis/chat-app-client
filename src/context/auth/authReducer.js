@@ -7,7 +7,6 @@ import {
    LOGOUT,
    CLEAR_ERRORS,
    AUTH_ERROR,
-   UPDATE_USER,
    UPDATE_FAIL,
 } from "./types";
 
@@ -48,6 +47,8 @@ export default (state, action) => {
             error: null,
          };
       case UPDATE_FAIL:
+         console.log("In Udpatee Fail");
+         console.log(action.payload);
          return {
             ...state,
             error: action.payload,

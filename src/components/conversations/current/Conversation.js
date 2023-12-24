@@ -2,10 +2,17 @@ import React, { useContext, useEffect } from "react";
 import TopBar from "./TopBar";
 import Messages from "../../messages/Messages";
 import ConversationsContext from "../../../context/conversations/conversationContext";
-const Conversation = () => {
-   const { current, conversations, setCurrent } =
-      useContext(ConversationsContext);
 
+/**
+ *
+ * Main Content that Contains Current Conversation Users and Messages
+ *
+ * @returns
+ */
+const Conversation = () => {
+   const { current, conversations } = useContext(ConversationsContext);
+
+   //Return Renderable JSX
    return conversations && current ? (
       <div>
          <TopBar />

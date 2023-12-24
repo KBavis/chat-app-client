@@ -1,4 +1,4 @@
-import React, { useReducer } from "react";
+import React, { useReducer, useContext } from "react";
 import authReducer from "./authReducer";
 import AuthContext from "./authContext";
 import axios from "axios";
@@ -28,6 +28,8 @@ const AuthState = (props) => {
    };
 
    const [state, dispatch] = useReducer(authReducer, initalState);
+
+   const { setAlert } = useContext(AlertContext);
 
    // Load User
    const loadUser = async () => {
@@ -149,8 +151,10 @@ const AuthState = (props) => {
 
          //Reload User
          loadUser();
+         setAlert("Successfully updated user profile", "success");
       } catch (err) {
          console.error(err.response);
+         console.log("In UPDATE FAIL!!!");
          dispatch({
             type: UPDATE_FAIL,
             payload: err.response.data,

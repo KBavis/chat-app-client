@@ -90,9 +90,12 @@ const Messages = () => {
          let messageToAdd = messages[messages.length - 1];
          let isPresent = false;
          //If Message Already In Conversation Messages (Ensures We Don't Add Message Twice)
-         for (let i = 0; i < messageIds.length; i++) {
-            if (messageToAdd.message_id === messageIds[i]) {
-               isPresent = true;
+         if (messageIds && messageIds.length > 0) {
+            //ensure message Ids has entries
+            for (let i = 0; i < messageIds.length; i++) {
+               if (messageToAdd.message_id === messageIds[i]) {
+                  isPresent = true;
+               }
             }
          }
          if (!isPresent) {

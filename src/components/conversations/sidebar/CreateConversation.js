@@ -2,6 +2,13 @@ import React from "react";
 import Users from "../../users/Users";
 import FilterUsers from "../../users/FilterUsers";
 
+/**
+ * Create Conversation Modal
+ *
+ * @param {boolean} modalOpen -- local state to determine if modal should be displayed
+ * @param {function} onClose -- function to close modal
+ * @returns
+ */
 const CreateConversation = ({ modalOpen, onClose }) => {
    return modalOpen ? (
       <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">

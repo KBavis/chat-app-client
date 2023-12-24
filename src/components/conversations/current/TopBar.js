@@ -2,22 +2,37 @@ import React from "react";
 import { useContext, useEffect, useState } from "react";
 import ConversationsContext from "../../../context/conversations/conversationContext";
 import AuthContext from "../../../context/auth/authContext";
-import img from "../../../images/default.jpg";
 import DropDownMenu from "../../layout/DropDownMenu";
 import messageContext from "../../../context/messages/messageContext";
+
 const TopBar = () => {
+   /**
+    * ========================
+    * CONTEXT AND GLOBAL STATES
+    * =========================
+    */
    const { current } = useContext(ConversationsContext);
    const { user } = useContext(AuthContext);
    const { messages } = useContext(messageContext);
+
+   /**
+    * =================
+    * LOCAL STATES
+    * ================
+    */
+
    const [currUsers, setCurrUsers] = useState("");
    const [currImage, setCurrImage] = useState("");
    const [menuOpen, setMenuOpen] = useState(false);
-   const [recentMessage, setRecentMessage] = useState(null);
 
+   //Updates Listed Conversation Users
    useEffect(() => {
+      //Filter Users To Ensure We Don't Include Auth User
       let convoUsers = current?.users?.filter(
          (u) => u?.user_id !== user?.user_id
       );
+
+      //Construct String of Users Names
       let users = "";
       if (convoUsers) {
          for (let i = 0; i < convoUsers.length; i++) {
@@ -30,12 +45,12 @@ const TopBar = () => {
 
    //Update Conversation Image When New Messages Sent
    useEffect(() => {
+      //Ensure There Are Multiple Users In Conversation
       if (current?.users.length >= 2) {
          if (messages && messageContext.length > 0) {
             //Ensure That Auth User Is Not Sender
             if (messages[messages.length - 1].sender !== user.user_id) {
                setCurrImage(messages[messages.length - 1].sender?.profileImage);
-               console.log("1");
             }
          } else {
             //Set Image To NON-AUTH User Profile Image That Sent Most Recent Message
@@ -45,7 +60,6 @@ const TopBar = () => {
                messages[messages.length - 1].sender?.user_id !== user.user_id
             ) {
                setCurrImage(messages[messages.length - 1].sender?.profileImage);
-               console.log("2");
             } else {
                //Set Image To Most Recent Message That Was Not Sent By You
                let message = findRecentMessage();
@@ -63,6 +77,7 @@ const TopBar = () => {
       }
    }, [messages, current]);
 
+   //On-Click To Open Modal (Add User, Leave Conversation, Pin Conversation)
    const onClick = () => {
       setMenuOpen(!menuOpen);
    };
@@ -90,6 +105,7 @@ const TopBar = () => {
       return null;
    };
 
+   //Return Renderable JSX
    return current ? (
       <div className="relative">
          <div className="flex items-center">

@@ -59,6 +59,12 @@ const UserProfile = ({ modalOpen, onClose }) => {
       }
    };
 
+   //Set Alert On Update Profile Error
+   useEffect(() => {
+      setAlert(`Error updating profile: ${error}`, "danger");
+      console.log("HELLLLO???");
+   }, [error]);
+
    const onSubmit = (e) => {
       e.preventDefault();
       let names = updates.name.split(" ");
@@ -69,9 +75,11 @@ const UserProfile = ({ modalOpen, onClose }) => {
       };
       updateUser(updatedUser, imageFile, imageUpdated, user_id);
       setImageUpdated(false);
-      if (!error) {
-         setAlert("Successfully updated user profile", "success");
-      }
+      // if (error === null || error.length === 0) {
+      //    setAlert("Successfully updated user profile", "success");
+      // } else {
+      //    setAlert("Failed to update profile", "danger");
+      // }
       onClose();
    };
    return modalOpen ? (

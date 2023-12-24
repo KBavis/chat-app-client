@@ -6,21 +6,28 @@ import ConversationsContext from "../../../context/conversations/conversationCon
 import CreateConversation from "./CreateConversation";
 import UserContext from "../../../context/users/userContext";
 
+/**
+ * Main Sidebar Component for Home Page
+ *
+ * @returns ConverastionSidebar
+ */
 const ConversationsSidebar = () => {
-   const { getUserConversations, conversations, current, setCurrent } =
-      useContext(ConversationsContext);
+   const { conversations } = useContext(ConversationsContext);
 
    const [modalOpen, setModalOpen] = useState(false);
 
-   const { users, getUsers, loading, filtered } = useContext(UserContext);
+   //Fetch Users On Sidebar Mounting
+   const { getUsers } = useContext(UserContext);
    useEffect(() => {
       getUsers();
    }, []);
 
-   //Open Modal For User To Create Conversation
+   //On Click To Trigger Create Converastion Modal
    const onClick = () => {
       setModalOpen(true);
    };
+
+   //Return Renderable JSX
    return (
       <div className="m-auto pt-10 px-2 min-h-screen">
          <ProfileBrief />

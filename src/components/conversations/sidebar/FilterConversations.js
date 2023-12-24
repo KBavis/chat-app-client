@@ -1,10 +1,17 @@
 import React, { useContext, useRef, useState } from "react";
 import ConversationContext from "../../../context/conversations/conversationContext";
 
+/**
+ *
+ * Filter Conversation Input For Sidebar
+ *
+ * @returns FilterConversations Input
+ */
 const FilterConversations = () => {
    const { filterConversations, clearFilter } = useContext(ConversationContext);
    const [inputValue, setInputValue] = useState("");
 
+   //Filter Conversations In Real Time Based On Input
    const onChange = (e) => {
       const value = e.target.value;
       setInputValue(value);
@@ -16,6 +23,7 @@ const FilterConversations = () => {
       }
    };
 
+   //Return Renderable JSX
    return (
       <div className="mt-10 relative">
          {inputValue === "" && (

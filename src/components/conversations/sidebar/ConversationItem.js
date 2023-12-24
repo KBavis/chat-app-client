@@ -1,92 +1,114 @@
 import React, { useContext, useEffect, useState } from "react";
 import ConversationsContext from "../../../context/conversations/conversationContext";
 import AuthContext from "../../../context/auth/authContext";
-import def from "../../../images/default.jpg";
+import defaultImage from "../../../images/default.jpg";
 import MessageContext from "../../../context/messages/messageContext";
 import subsribeToConversation from "../../../utils/websocket-client";
 
+/**
+ * Individual Conversation Item Listed In Our Sidebar
+ *
+ * @param {ConversationResponseDTO} conversation
+ * @returns
+ */
 const ConversationItem = ({ conversation }) => {
+   /**
+    * ===================
+    * Contexts and Global States
+    * ===================
+    */
+
    const {
+      //state functions
       deleteConversation,
       setCurrent,
       clearCurrent,
+      recieveMessage,
+      //state variables
       current,
       conversations,
       recentConversation,
       pinned,
-      recieveMessage,
       recent,
    } = useContext(ConversationsContext);
 
    const { user } = useContext(AuthContext);
 
+   /**
+    *  ==========================
+    *  Local States
+    *  ========================
+    */
    const [conversationUsers, setConversationUsers] = useState([]);
-   const [recentMessageContent, setRecentMessageContent] = useState("");
    const [recentMessage, setRecentMessage] = useState({});
-   const [currImg, setCurrImage] = useState(def);
+   const [currImg, setCurrImage] = useState(defaultImage);
    const messageContext = useContext(MessageContext);
-   const [currentConversation, setCurrentConversation] = useState({});
-   const [isRecentConversation, setIsRecentConversation] = useState({});
 
+   /**
+    * ======================
+    * Destructuring Of Props
+    * ======================
+    */
    const { conversation_id, users, messages, conversationStart } = conversation;
 
-   const onClick = () => {
-      setCurrent(conversation);
-   };
-
    /**
-    *  1) we need to update the conversation item recent message when one
-    *       - Logic has shifted so that a RECIEVED MESSAGE will be put into the CONVERSATION STATE that has SAME CONVERSATION ID as Message Recieved
-    *       - Due to this, we need to find the associated Conversation in Conversation State, And Update Our Profile Image and Our Recent Message Based On These Updates
-    *       - We Need To Steal Logic From Messages To Updates The Profile Image, Since This Wont Be In State
-    *
-    **/
-
-   /**
-    * Determine If This Conversation Is The Recently Updated Conversation
+    * ==========================
+    * Use Effect (For Re-Renders)
+    * ===========================
     */
 
    /**
-    *  Set Current Conversation Based on Newly Clicked Conversation
+    * Update Recent Message When Recieved From Another User
     */
    useEffect(() => {
-      setCurrentConversation(current);
-   }, [current]);
-
-   useEffect(() => {
-      console.log(
-         "//////////////// ----- RECENT MESSAGE UPDATED ----- ///////////"
-      );
-      console.log("FOR CONVERSATION: ");
-      console.log(conversation);
-      console.log(recentMessage);
-   }, [recentMessage]);
-
-   useEffect(() => {
-      setRecentMessage(recent);
+      //ensure conversation & recent conversation exists
+      if (conversation && recentConversation) {
+         if (
+            conversation.conversation_id === recentConversation.conversation_id
+         )
+            setRecentMessage(recent);
+      }
    }, [recent]);
 
-   //Set Recent Message, Conversation Users, And Conversation Image
+   /**
+    * Re-Render On New Recent MEssage
+    */
    useEffect(() => {
-      //Set Recent Message
+      console.log("Re-Render On New Recent Message!");
+   }, [recentMessage]);
+
+   //Updates On Inital Mounting (Converastion Image, Converastion Users, WebSocket Init)
+   useEffect(() => {
+      //Set Lates Message On Inital Load (As All Messages Will Be Context)
       if (messages && messages.length > 0) {
          setRecentMessage(messages[messages.length - 1]);
       }
 
-      //Set Image
+      //Set Converastion Image To Most Recent Message Sent Users Profile Image (If User Isn't Auth User)
       if (messages && messages.length > 0) {
          let mostRecentMessageSent = findRecentMessage();
          if (mostRecentMessageSent) {
-            setCurrImage(mostRecentMessageSent.sender.profileImage);
+            let imageToSet = mostRecentMessageSent.sender.profileImage
+               ? mostRecentMessageSent.sender.profileImage
+               : defaultImage;
+            setCurrImage(imageToSet);
          } else {
             //Set To Earliest User That Isn't Auth User
             let convoUsers = users.filter((u) => u?.user_id !== user?.user_id);
-            setCurrImage(convoUsers[0].profileImage);
+
+            let imageToSet = convoUsers[0].profileImage
+               ? convoUsers[0].profileImage
+               : defaultImage;
+            setCurrImage(imageToSet);
          }
       } else {
          //Set To Earliest User That Isn't Auth User
          let convoUsers = users.filter((u) => u?.user_id !== user?.user_id);
-         setCurrImage(convoUsers[0].profileImage);
+
+         let imageToSet = convoUsers[0].profileImage
+            ? convoUsers[0].profileImage
+            : defaultImage;
+         setCurrImage(imageToSet);
       }
 
       //Subscribe to each conversation for real-time functionality
@@ -114,9 +136,12 @@ const ConversationItem = ({ conversation }) => {
       }
    }, [users]);
 
-   //Update Recent Message When Another Is Sent
+   /**
+    * Update Recent Message Sent Upon Recieving New Messages / Sending New Messages
+    */
    useEffect(() => {
       let mostRecent = null;
+      //Ensure That Current && Converastion Are Equal
       if (current && conversation) {
          if (current.conversation_id === conversation.conversation_id) {
             if (
@@ -127,14 +152,7 @@ const ConversationItem = ({ conversation }) => {
                let recentMessageMsgContext =
                   messageContext.messages[messageContext.messages.length - 1];
 
-               console.log("----MOST RECENT MESSAGE SENT-----");
-               console.log(recentMessageMsgContext);
-               console.log("----RECENT CONVERSATION---");
-               console.log(recentConversation);
-               console.log("----RECENT CONVERSATION ID -----");
-               console.log(recentConversation?.conversation_id);
-               console.log("-----CONVERSATION IN THIS ITEM ID----");
-               console.log(conversation.conversation_id);
+               //Check If There Is a Newly Received Message
                if (
                   recentConversation &&
                   recentConversation.messages &&
@@ -142,39 +160,34 @@ const ConversationItem = ({ conversation }) => {
                      conversation.conversation_id &&
                   recentConversation.messages.length > 0
                ) {
-                  //Extract Recent Message From Recent Conversation
+                  //Extract Newly Received Message If Existent
                   let recentConvoMessage =
                      recentConversation.messages[
                         recentConversation.messages.length - 1
                      ];
-                  console.log("----RECENT CONVO MESSAGE---");
-                  console.log(recentConvoMessage);
+
+                  //Most Recent Date Associated With Messages In MessageContext
                   const messageDate =
                      recentMessageMsgContext && recentMessageMsgContext.sendDate
                         ? new Date(recentMessageMsgContext.sendDate)
                         : new Date("2000-01-01");
-                  console.log("---RECENT MESSAGE DATE----");
-                  console.log(messageDate);
 
+                  //Most Recent Date Assocaited With Recent Conversation (MessagesRecieved)
                   const convoDate =
                      recentConvoMessage && recentConvoMessage.sendDate
                         ? new Date(recentConvoMessage.sendDate)
                         : new Date("2000-01-01");
-                  console.log("---RECENT CONVERSATION DATE----");
-                  console.log(convoDate);
 
+                  //Set Most Recent Messages To Earlier of The Two
                   mostRecent =
                      messageDate >= convoDate
                         ? recentMessageMsgContext
                         : recentConvoMessage;
-                  console.log("RECENT MESSAGE");
-                  console.log(mostRecent);
                }
 
+               //Update Recent Message To Be The Later Of The Two
                mostRecent =
                   mostRecent === null ? recentMessageMsgContext : mostRecent;
-               console.log("-------MOST RECENT-------");
-               console.log(mostRecent);
                setRecentMessage(mostRecent);
             }
          }
@@ -185,13 +198,16 @@ const ConversationItem = ({ conversation }) => {
       conversation.conversation_id,
    ]);
 
-   //Update List of Conversation Users When a User Added
+   /**
+    * Updates Users Lsited
+    */
    useEffect(() => {
-      //If This Is The Current Conversation, Update With Corresponding
       if (current?.conversation_id === conversation?.conversation_id) {
+         //Filter Convo Users
          let convoUsers = current.users?.filter(
             (currUser) => currUser?.user_id !== user?.user_id
          );
+         //Cut-Off Names If Length Exceeds 3
          if (convoUsers.length > 3) {
             let firstThree = convoUsers.splice(0, 3);
             convoUsers = [...firstThree, { name: "..." }];
@@ -200,7 +216,11 @@ const ConversationItem = ({ conversation }) => {
       }
    }, [current?.users]);
 
-   //Helper Function To Find Most Recent Message That Wasn't Sent By You
+   /**
+    * Helper Function To Find Most Recent Message Not Sent By You
+    *
+    * @returns most recent message
+    */
    const findRecentMessage = () => {
       if (messages) {
          for (let i = messages.length - 1; i >= 0; i--) {
@@ -212,12 +232,24 @@ const ConversationItem = ({ conversation }) => {
       return null;
    };
 
-   //Callback Function To Handle Recieved Messages
-   //@TODO Change this logic to be by Conversation
+   /**
+    * Function to update the currently viewed conversation (Global State)
+    */
+   const onClick = () => {
+      setCurrent(conversation);
+   };
+
+   /**
+    * Callback function for newly received messages
+    *
+    * @param {MessageDTO} message
+    * @param {Long} conversation_id
+    */
    const handleRecievedMessage = (message, conversation_id) => {
       recieveMessage(message, conversation_id);
    };
 
+   //Return Rendered JSX
    return (
       <div
          onClick={onClick}
