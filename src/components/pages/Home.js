@@ -10,11 +10,19 @@ const Home = () => {
 
    //Direct User To Login Page If Not Authenticated
    useEffect(() => {
-      if (!isAuthenticated) {
+      // if (!isAuthenticated) {
+      //    removeAuthToken();
+      //    navigate("/login");
+      // } else {
+      //    loadUser();
+      // }
+
+      //If There Is A Token In Storage
+      if (localStorage.token) {
+         loadUser();
+      } else {
          removeAuthToken();
          navigate("/login");
-      } else {
-         loadUser();
       }
    }, [isAuthenticated]);
 

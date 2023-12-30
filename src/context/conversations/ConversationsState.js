@@ -7,6 +7,7 @@ import two from "../../images/2.jpg";
 import three from "../../images/3.jpg";
 import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
+import dayDifference from "../../utils/dateUtil";
 
 import {
    CLEAR_CURRENT,
@@ -23,6 +24,7 @@ import {
    RECIEVE_MESSAGE,
    SET_RECENT_CONVERSATION,
    SET_RECENT_MESSAGE,
+   DAY_DIFFERENCE,
 } from "./types";
 import { ADD_USER } from "../users/types";
 const ConversationsState = (props) => {
@@ -197,16 +199,12 @@ const ConversationsState = (props) => {
          let messages = updatedConversations[conversationIndex].messages;
          let recentMessage = messages[messages.length - 1];
 
+         //Updates Recent Message Sent
          dispatch({
             type: SET_RECENT_MESSAGE,
             payload: recentMessage,
          });
       }
-
-      // dispatch({
-      //    type: SET_RECENT_CONVERSATION,
-      //    payload: updatedConversations,
-      // });
    };
 
    return (

@@ -5,7 +5,8 @@ import AlertContext from "../../context/alert/alertContext";
 
 const UserProfile = ({ modalOpen, onClose }) => {
    //Fetch Authenticated User
-   const { user, updateUser, error } = useContext(AuthContext);
+   const { user, updateUser, updateError, clearErrors } =
+      useContext(AuthContext);
 
    //Set Alerts
    const { setAlert } = useContext(AlertContext);
@@ -61,9 +62,11 @@ const UserProfile = ({ modalOpen, onClose }) => {
 
    //Set Alert On Update Profile Error
    useEffect(() => {
-      setAlert(`Error updating profile: ${error}`, "danger");
-      console.log("HELLLLO???");
-   }, [error]);
+      if (updateError) {
+         clearErrors();
+         setAlert(`Error updating profile: ${updateError}`, "danger");
+      }
+   }, [updateError]);
 
    const onSubmit = (e) => {
       e.preventDefault();

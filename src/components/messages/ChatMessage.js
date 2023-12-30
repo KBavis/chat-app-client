@@ -3,31 +3,44 @@ import MessageContext from "../../context/messages/messageContext";
 import dayDifference from "../../utils/dateUtil";
 import { useContext, useEffect, useState } from "react";
 
-const ChatMessage = ({ text, sentByUser, message }) => {
+const ChatMessage = ({ text, sentByUser, message, showDate }) => {
+   /**
+    * ===================
+    * Contexts and Global States
+    * ===================
+    */
    const { messages } = useContext(MessageContext);
+
+   /**
+    *  ==========================
+    *  Local States
+    *  ========================
+    */
    const { conversations, recent } = useContext(ConversationsContext);
    const [displayDate, setDisplayDate] = useState(false);
+   const [recentDate, setRecentDate] = useState(null); //stores date of last sent message upon first sent message
 
+   /**
+    * Determine Whether We Should Display The Date
+    */
    useEffect(() => {
-      setDisplayDate(showDateMessages() || showDateConversations());
+      if (showDateMessages()) {
+         setDisplayDate(true);
+      } else {
+         //Check If This Is The First Message Sent
+         if (recent?.message_id === message.message_id) {
+            /**
+             * @TODO : Eventually need to implement the logic for when you recieved a message as well
+             *             - Currently, the applicaiton will not correctly display this when a Message is being recieved
+             *  */
+         }
+      }
    }, [message]);
 
-   const showDateConversations = () => {
-      if (recent.message_id === message.message_id) {
-         console.log("THIS IS INDEED TRUE!!!");
-
-         //Determine If This Is The First Message Sent, If So, Return True
-         //@TODO : Update this logic as follows
-         /**
-          *  1) It Needs To Return True If First Message Sent
-          *  2) It Needs To Return True If The Message Prior (Either In MessageContext or Currently) Occured More Than A Day Agop
-          */
-         if (!messages || messages.length === 0) {
-            return true;
-         }
-         return false;
-      }
-   };
+   /**
+    *
+    * @returns whether to display the date in UI or not
+    */
    const showDateMessages = () => {
       if (!messages || messages.length == 0) {
          return false;
@@ -41,10 +54,12 @@ const ChatMessage = ({ text, sentByUser, message }) => {
          const lastMessageSent = messages[messages.length - 2];
          const lastMessageDate = new Date(lastMessageSent.sendDate);
          const currentDate = new Date(message.sendDate);
+         setRecentDate(currentDate);
          return dayDifference(lastMessageDate, currentDate);
       }
    };
 
+   //return renderable JSX
    return (
       <div className="flex flex-col">
          {/* Display Date Only If First Message Sent Or Difference In Last Message Sent Is A Day */}

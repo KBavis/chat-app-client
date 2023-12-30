@@ -47,11 +47,10 @@ export default (state, action) => {
             error: null,
          };
       case UPDATE_FAIL:
-         console.log("In Udpatee Fail");
          console.log(action.payload);
          return {
             ...state,
-            error: action.payload,
+            updateError: action.payload,
          };
       default:
          return state;

@@ -6,8 +6,14 @@ import ConversationsContext from "../../context/conversations/conversationContex
 import Loading from "../layout/Loading";
 import AlertContext from "../../context/alert/alertContext";
 import UserContext from "../../context/users/userContext";
+import dayDifference from "../../utils/dateUtil";
 
 const Messages = () => {
+   /**
+    * ===================
+    * Contexts and Global States
+    * ===================
+    */
    const {
       messages,
       filtered,
@@ -19,14 +25,20 @@ const Messages = () => {
    } = useContext(MessageContext);
    const { user } = useContext(AuthContext);
    const conversationContext = useContext(ConversationsContext);
-
    const { users } = useContext(UserContext);
+
+   /**
+    *  ==========================
+    *  Local States
+    *  ========================
+    */
    const [text, setText] = useState("");
    const [recentMessage, setRecentMessage] = useState({});
    const messagesRef = useRef(null);
    const { setAlert } = useContext(AlertContext);
    const [conversationMessages, setConversationMessages] = useState(null);
    const [messageIds, setMessageIds] = useState([]);
+   const [showDate, setShowDate] = useState(null);
 
    const onChange = (e) => {
       setText(e.target.value);
@@ -39,6 +51,12 @@ const Messages = () => {
       setConversationMessages(null);
    }, [conversationContext.current]);
 
+   /**
+    * On Submit For Sending a Message
+    *
+    * @param {*} e
+    * @returns
+    */
    const onSubmit = (e) => {
       e.preventDefault();
       if (text === "") {
@@ -75,7 +93,6 @@ const Messages = () => {
 
    //Updates Our Conversation Mesage When We Change Current Conversation
    useEffect(() => {
-      console.log(conversationMessages);
       //On Initial Render, We Should Update State With Messages From Our
       if (!conversationMessages || conversationMessages.length == 0) {
          setConversationMessages(messages);
@@ -151,13 +168,32 @@ const Messages = () => {
                   ...(prevConversationMessages || []),
                   updatedLatestMessage,
                ]);
+
+               //Determine If We SHould Show This Date Or Not
+               if (
+                  conversationMessages > 1 &&
+                  conversationMessages[conversationMessages.length - 2]
+               ) {
+                  let previousMessageDate =
+                     conversationMessages[conversationMessages.length - 2]
+                        .sendDate;
+
+                  let res = dayDifference(
+                     new Date(previousMessageDate),
+                     new Date(updatedLatestMessage.sendDate)
+                  );
+                  console.log("DAY DIFFERENCE  IN SHOWDATE()");
+                  console.log(res);
+                  setShowDate(res);
+               }
             }
          }
       }
    }, [conversationContext.recentConversation]);
 
+   //Return Renderable JSX
    if (loading == true) {
-      return <Loading></Loading>;
+      return <Loading></Loading>; //spinner for messages loads
    }
    return user ? (
       // Flex Flex-Col Ensures That The Input/Send Message Is BELOW The Messages

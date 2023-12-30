@@ -1,3 +1,4 @@
+import { act } from "react-dom/test-utils";
 import {
    CLEAR_FILTER,
    FILTER_CONVERSATIONS,

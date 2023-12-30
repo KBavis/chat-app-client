@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import AuthContext from "../../context/auth/authContext";
 import ConversationsContext from "../../context/conversations/conversationContext";
 import MessageContext from "../../context/messages/messageContext";
+import removeAuthToken from "../../utils/removeAuthToken";
 
 const Navbar = () => {
    const { logoutUser, isAuthenticated } = useContext(AuthContext);
@@ -15,6 +16,7 @@ const Navbar = () => {
       logoutUser();
       clearConversations();
       clearMessages();
+      removeAuthToken();
    };
 
    /** Conditionally Render Auth Links of Un-auth Links */

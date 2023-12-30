@@ -5,6 +5,7 @@ import Conversations from "./Conversations";
 import ConversationsContext from "../../../context/conversations/conversationContext";
 import CreateConversation from "./CreateConversation";
 import UserContext from "../../../context/users/userContext";
+import AuthContext from "../../../context/auth/authContext";
 
 /**
  * Main Sidebar Component for Home Page
@@ -13,14 +14,17 @@ import UserContext from "../../../context/users/userContext";
  */
 const ConversationsSidebar = () => {
    const { conversations } = useContext(ConversationsContext);
+   const { isAuthenticated } = useContext(AuthContext);
 
    const [modalOpen, setModalOpen] = useState(false);
 
    //Fetch Users On Sidebar Mounting
    const { getUsers } = useContext(UserContext);
    useEffect(() => {
-      getUsers();
-   }, []);
+      if (isAuthenticated) {
+         getUsers();
+      }
+   }, [isAuthenticated]);
 
    //On Click To Trigger Create Converastion Modal
    const onClick = () => {

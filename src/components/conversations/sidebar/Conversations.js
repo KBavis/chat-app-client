@@ -3,6 +3,7 @@ import ConversationsContext from "../../../context/conversations/conversationCon
 import ConversationItem from "./ConversationItem";
 import Loading from "../../layout/Loading";
 import MessageContext from "../../../context/messages/messageContext";
+import AuthContext from "../../../context/auth/authContext";
 
 /**
  *
@@ -25,9 +26,13 @@ const Conversations = () => {
 
    const { messages } = useContext(MessageContext);
 
+   const { isAuthenticated } = useContext(AuthContext);
+
    //Fetch Authenticated Users Conversations
    useEffect(() => {
-      getUserConversations();
+      if (isAuthenticated) {
+         getUserConversations();
+      }
    }, []);
 
    //Set Curent Conversation Any Time Conversations Is Updated (Leaving/Adding Conversation)
