@@ -4,6 +4,7 @@ import ConversationItem from "./ConversationItem";
 import Loading from "../../layout/Loading";
 import MessageContext from "../../../context/messages/messageContext";
 import AuthContext from "../../../context/auth/authContext";
+import subscribeToConversation from "../../../utils/websocket-client";
 
 /**
  *
@@ -22,6 +23,7 @@ const Conversations = () => {
       setCurrent,
       current,
       getUserConversations,
+      recieveMessage,
    } = useContext(ConversationsContext);
 
    const { messages } = useContext(MessageContext);
@@ -33,7 +35,7 @@ const Conversations = () => {
       if (isAuthenticated) {
          getUserConversations();
       }
-   }, []);
+   }, [isAuthenticated]);
 
    //Set Curent Conversation Any Time Conversations Is Updated (Leaving/Adding Conversation)
    useEffect(() => {
@@ -41,6 +43,27 @@ const Conversations = () => {
          setCurrent(conversations[0]);
       }
    }, [conversations, messages]);
+
+   //Subscribe To Each Conversation's Corresponding Web-Socket
+   useEffect(() => {
+      if (conversations) {
+         conversations.forEach((conversation) => {
+            subscribeToConversation(
+               conversation.conversation_id,
+               handleRecievedMessage
+            );
+         });
+      }
+   }, [conversations]);
+   /**
+    * Callback function for newly received messages
+    *
+    * @param {MessageDTO} message
+    * @param {Long} conversation_id
+    */
+   const handleRecievedMessage = (message, conversation_id) => {
+      recieveMessage(message, conversation_id);
+   };
 
    //Return Rendered JSX
    return loading ? (

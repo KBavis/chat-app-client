@@ -113,10 +113,10 @@ export default (state, action) => {
             conversations: null,
             current: null,
             filtered: null,
+            recent: null,
+            recentConversation: null,
          };
       case SET_RECENT_CONVERSATION:
-         console.log("IN SET_RECENT_CONVERSATION WITH PAYLOAD:");
-         console.log(action.payload);
          return {
             ...state,
             recentConversation: action.payload,

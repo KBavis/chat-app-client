@@ -3,45 +3,52 @@ import { useState, useContext } from "react";
 import GenericModal from "./GenericModal";
 import ConversationsContext from "../../context/conversations/conversationContext";
 import AddUser from "../users/AddUser";
+
+/**
+ *
+ * @param {function} setMenuOpen - opens/closes the drop-down menu
+ * @param {boolean} menuOpen - determines if drop-down menu should be displayed
+ * @returns
+ */
 const DropDownMenu = ({ setMenuOpen, menuOpen }) => {
-   const {
-      leaveConversation,
-      current,
-      setCurrent,
-      conversations,
-      pinConversation,
-      pinned,
-   } = useContext(ConversationsContext);
+   /**
+    * ==========================
+    * CONTEXT AND GLOBAL STATES
+    * ==========================
+    */
+   const { leaveConversation, current, pinConversation, pinned } =
+      useContext(ConversationsContext);
    const [leaveConversationModalOpen, setLeaveConversationModalOpen] =
       useState(false);
-   const [addUserModalOpen, setAddUserModalOpen] = useState(false);
-   if (!menuOpen) return null;
 
+   /**
+    * =========================
+    * LOCAL STATES
+    * ========================
+    */
+   const [addUserModalOpen, setAddUserModalOpen] = useState(false);
+
+   //On-Click For Our Drop-Down Menu
    const handleOptionClick = (option) => {
       if (option === "Add User") {
-         setAddUserModalOpen(true);
+         setAddUserModalOpen(true); //open add-user modal
       } else if (option === "Leave Conversation") {
-         //Pop Up Modal To Ensure That They Want to Leave Conversation
-         setLeaveConversationModalOpen(true);
+         setLeaveConversationModalOpen(true); //open confimration modal
       } else {
-         pinConversation(current.conversation_id);
+         pinConversation(current.conversation_id); //pin selected confirmation & close
          setMenuOpen(false);
       }
    };
 
+   //Once Confirmed, Leave Selected Conversation
    const handleConfirmLeaveConversation = async () => {
       setLeaveConversationModalOpen(false);
-      //Ensure That This Is Executed
       await leaveConversation(current.conversation_id);
-      setMenuOpen(false);
+      setMenuOpen(false); //close modal
    };
 
-   const handleConfirmAddUser = () => {
-      setAddUserModalOpen(false);
-      //addUser(user);
-   };
-
-   return (
+   //Return Renderable JSX (if menu should be displayed)
+   return !menuOpen ? null : (
       <div className="absolute right-0 bottom-[-60px] mt-2 w-48 bg-white border border-gray-300 rounded-md shadow-lg z-10">
          <div
             onClick={() => handleOptionClick("Add User")}

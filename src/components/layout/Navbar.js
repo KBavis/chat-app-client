@@ -6,21 +6,26 @@ import MessageContext from "../../context/messages/messageContext";
 import removeAuthToken from "../../utils/removeAuthToken";
 
 const Navbar = () => {
+   /**
+    * ==========================
+    * CONTEXT AND GLOBAL STATES
+    * ==========================
+    */
    const { logoutUser, isAuthenticated } = useContext(AuthContext);
    const { clearConversations, clearCurrent } =
       useContext(ConversationsContext);
    const { clearMessages } = useContext(MessageContext);
 
+   //clear necessary front-end stored infomration on logout
    const onLogout = () => {
       clearCurrent();
       logoutUser();
       clearConversations();
       clearMessages();
-      removeAuthToken();
+      removeAuthToken(); //remove JWT token
    };
 
-   /** Conditionally Render Auth Links of Un-auth Links */
-   return isAuthenticated ? (
+   return isAuthenticated ? ( //auth links
       <div className="bg-sky-500 flex justify-between items-center p-3 z-999 w-full text-white font-roboto">
          <h1 className="text-4xl ml-5 font-bold">
             <i className="fa-solid fa-comment" /> Chit-Chat
@@ -46,6 +51,7 @@ const Navbar = () => {
          </ul>
       </div>
    ) : (
+      //non-auth links
       <div className="bg-sky-500 flex justify-between items-center p-3 z-999 w-full text-white font-roboto">
          <h1 className="text-4xl ml-5 font-bold">
             <i className="fa-solid fa-comment" /> Chit-Chat

@@ -29,7 +29,6 @@ const MessageState = (props) => {
 
    //Send Message
    const sendMessage = async (message, convoId) => {
-      console.log("In Send Message() In MessageState");
       try {
          const config = {
             headers: {
@@ -83,8 +82,6 @@ const MessageState = (props) => {
    const recieveMessage = async (message, conversation_id, messages) => {
       let msg = JSON.parse(message);
       if (msg.senderId !== user.user_id) {
-         console.log(messages);
-
          dispatch({
             type: RECIEVE_MESSAGE,
             payload: msg,

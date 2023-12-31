@@ -14,15 +14,8 @@ const Messages = () => {
     * Contexts and Global States
     * ===================
     */
-   const {
-      messages,
-      filtered,
-      current,
-      sendMessage,
-      getMessages,
-      setLoading,
-      loading,
-   } = useContext(MessageContext);
+   const { messages, sendMessage, getMessages, setLoading, loading } =
+      useContext(MessageContext);
    const { user } = useContext(AuthContext);
    const conversationContext = useContext(ConversationsContext);
    const { users } = useContext(UserContext);
@@ -33,12 +26,10 @@ const Messages = () => {
     *  ========================
     */
    const [text, setText] = useState("");
-   const [recentMessage, setRecentMessage] = useState({});
    const messagesRef = useRef(null);
    const { setAlert } = useContext(AlertContext);
    const [conversationMessages, setConversationMessages] = useState(null);
    const [messageIds, setMessageIds] = useState([]);
-   const [showDate, setShowDate] = useState(null);
 
    const onChange = (e) => {
       setText(e.target.value);
@@ -126,10 +117,8 @@ const Messages = () => {
 
    useEffect(() => {}, [messages?.length, conversationMessages]);
 
-   //Recieving A New Message
+   //Recieving A New Message Logic
    useEffect(() => {
-      console.log("WE HAVE RECEIVED A NEW MESSAGE");
-      console.log(conversationContext.recentConversation);
       if (
          conversationContext.recentConversation &&
          conversationContext.recentConversation.messages
@@ -138,8 +127,6 @@ const Messages = () => {
             conversationContext.recentConversation.messages;
          const latestRecentMessage =
             recentConvoMessages[recentConvoMessages.length - 1];
-
-         setRecentMessage(latestRecentMessage);
 
          if (
             conversationContext.current &&
@@ -158,9 +145,6 @@ const Messages = () => {
                   profileImage: foundUser[0]?.profileImage,
                },
             };
-
-            console.log("UPDATED LATES TMESSGES");
-            console.log(updatedLatestMessage);
 
             //Ensuring That We Don't Render Auth User Mesasge Twice
             if (user.user_id !== latestRecentMessage.senderId) {
@@ -182,14 +166,11 @@ const Messages = () => {
                      new Date(previousMessageDate),
                      new Date(updatedLatestMessage.sendDate)
                   );
-                  console.log("DAY DIFFERENCE  IN SHOWDATE()");
-                  console.log(res);
-                  setShowDate(res);
                }
             }
          }
       }
-   }, [conversationContext.recentConversation]);
+   }, [conversationContext.recentConversation, conversationContext.recent]);
 
    //Return Renderable JSX
    if (loading == true) {

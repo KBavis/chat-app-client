@@ -4,20 +4,17 @@ import Conversation from "../conversations/current/Conversation";
 import AuthContext from "../../context/auth/authContext";
 import { useNavigate } from "react-router-dom";
 import removeAuthToken from "../../utils/removeAuthToken";
+/**
+ *
+ * @returns Main Page (only page as of now)
+ */
 const Home = () => {
-   const { user, isAuthenticated, loadUser } = useContext(AuthContext);
+   const { isAuthenticated, loadUser } = useContext(AuthContext);
    const navigate = useNavigate();
 
    //Direct User To Login Page If Not Authenticated
    useEffect(() => {
-      // if (!isAuthenticated) {
-      //    removeAuthToken();
-      //    navigate("/login");
-      // } else {
-      //    loadUser();
-      // }
-
-      //If There Is A Token In Storage
+      //If There Is A Token In Storage, Try And Load User's Infomration
       if (localStorage.token) {
          loadUser();
       } else {
@@ -26,17 +23,15 @@ const Home = () => {
       }
    }, [isAuthenticated]);
 
+   //Return Renderable JSX
    return (
       <div className="grid grid-cols-4 w-full h-full">
          <div className="col-span-1  bg-slate-200  p-4 h-full">
             <ConversationSidebar />
          </div>
-         <div className="col-span-3 border-2 bg-slate-100 border-blue-500 p-4">
+         <div className="col-span-3 bg-slate-100 p-4">
             <Conversation />
          </div>
-         {/* <div className="col-span-1 border-2 border-red-500 p-4">
-            Right Column
-         </div> */}
       </div>
    );
 };

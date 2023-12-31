@@ -2,7 +2,15 @@ import React from "react";
 import Users from "./Users";
 import FilterUsers from "./FilterUsers";
 
+/**
+ *
+ * @param {boolean} modalOpen - determines whether to display this component
+ * @param {function} onClose - function for closing this component
+ * @param {function} setMenuOpen - function fro opening the menu
+ * @returns
+ */
 const AddUser = ({ modalOpen, onClose, setMenuOpen }) => {
+   //return renderable JSX
    return modalOpen ? (
       <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">
          <div className=" bg-white h-[600px] w-[600px] p-8 rounded shadow-lg overflow-y-auto no-scrollbar">

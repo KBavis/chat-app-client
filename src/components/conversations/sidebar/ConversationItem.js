@@ -68,14 +68,7 @@ const ConversationItem = ({ conversation }) => {
          )
             setRecentMessage(recent);
       }
-   }, [recent]);
-
-   /**
-    * Re-Render On New Recent MEssage
-    */
-   useEffect(() => {
-      console.log("Re-Render On New Recent Message!");
-   }, [recentMessage]);
+   }, [recent, recentMessage]);
 
    //Updates On Inital Mounting (Converastion Image, Converastion Users, WebSocket Init)
    useEffect(() => {
@@ -110,16 +103,6 @@ const ConversationItem = ({ conversation }) => {
             : defaultImage;
          setCurrImage(imageToSet);
       }
-
-      //Subscribe to each conversation for real-time functionality
-      //@TODO: Move this logic to seperate user effect that only executes when more conversations are created
-      const subscribe = async () => {
-         console.log(
-            "Attemtping To Subsribe To Conversation: " + conversation_id
-         );
-         await subsribeToConversation(conversation_id, handleRecievedMessage);
-      };
-      subscribe();
    }, []);
 
    useEffect(() => {

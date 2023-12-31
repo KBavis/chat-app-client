@@ -107,8 +107,6 @@ const AuthState = (props) => {
             payload: res.data,
          });
       } catch (err) {
-         console.log(err.response);
-         console.log(`Error Response: ${err.response.data}`);
          dispatch({
             type: LOGIN_FAIL,
             payload: err.response.data,
@@ -118,7 +116,6 @@ const AuthState = (props) => {
 
    //Update User
    const updateUser = async (formData, imageFile, imageUpdated, id) => {
-      console.log(`Id Passsed: ${id}`);
       const userConfig = {
          headers: {
             "Content-Type": "application/json",
@@ -155,7 +152,6 @@ const AuthState = (props) => {
          setAlert("Successfully updated user profile", "success");
       } catch (err) {
          console.error(err.response);
-         console.log("In UPDATE FAIL!!!");
          dispatch({
             type: UPDATE_FAIL,
             payload: err.response.data,

@@ -24,11 +24,6 @@ const subscribeToConversation = async (conversation_id, messageHandler) => {
             stompClient.subscribe(subscriptionUrl, (message) => {
                //Call the callback function
                messageHandler(message.body, conversation_id);
-               // Push message into frontend
-               console.log(
-                  `Received message for conversation ${conversation_id}:`,
-                  message.body
-               );
             });
          },
          (error) => {

@@ -1,10 +1,16 @@
 import React, { useContext, useRef, useState } from "react";
 import UserContext from "../../context/users/userContext";
 
+/**
+ *
+ * @returns filter input for finding users
+ */
 const FilterUsers = () => {
-   const { filterUsers, clearFilter } = useContext(UserContext);
-   const [inputValue, setInputValue] = useState("");
+   const { filterUsers, clearFilter } = useContext(UserContext); //users global context
 
+   const [inputValue, setInputValue] = useState(""); //local state for filtering
+
+   //On Change For A User Typing To Filter
    const onChange = (e) => {
       const value = e.target.value;
       setInputValue(value);
@@ -16,6 +22,7 @@ const FilterUsers = () => {
       }
    };
 
+   //return renderable JSX
    return (
       <div className="mt-5 relative">
          {inputValue === "" && (

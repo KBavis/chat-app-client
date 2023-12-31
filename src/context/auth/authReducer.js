@@ -47,7 +47,6 @@ export default (state, action) => {
             error: null,
          };
       case UPDATE_FAIL:
-         console.log(action.payload);
          return {
             ...state,
             updateError: action.payload,

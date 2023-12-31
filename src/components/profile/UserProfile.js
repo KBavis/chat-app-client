@@ -3,6 +3,13 @@ import AuthContext from "../../context/auth/authContext";
 import one from "../../images/default.jpg";
 import AlertContext from "../../context/alert/alertContext";
 
+/**
+ * Edit User Profile Image Component
+ *
+ * @param {boolean} modalOpen - determines whether to render this component or not
+ * @param {function} onClose -  function to close the modal
+ * @returns
+ */
 const UserProfile = ({ modalOpen, onClose }) => {
    //Fetch Authenticated User
    const { user, updateUser, updateError, clearErrors } =
@@ -78,13 +85,10 @@ const UserProfile = ({ modalOpen, onClose }) => {
       };
       updateUser(updatedUser, imageFile, imageUpdated, user_id);
       setImageUpdated(false);
-      // if (error === null || error.length === 0) {
-      //    setAlert("Successfully updated user profile", "success");
-      // } else {
-      //    setAlert("Failed to update profile", "danger");
-      // }
       onClose();
    };
+
+   //return renderable JSX (if modal should be displayed)
    return modalOpen ? (
       <div className="fixed inset-0 flex items-center justify-center z-50 backdrop-filter backdrop-blur-sm">
          <div className=" bg-white h-[600px] w-[600px] p-8 rounded shadow-lg overflow-y-auto no-scrollbar">

@@ -2,27 +2,46 @@ import React, { useContext, useState, useEffect } from "react";
 import AuthContext from "../../context/auth/authContext";
 import img from "../../images/default.jpg";
 import UserProfile from "./UserProfile";
-const ProfileBrief = (props) => {
+
+/**
+ *
+ * @returns Displays Authenticated Users Information
+ */
+const ProfileBrief = () => {
+   /**
+    * ==========================
+    * CONTEXT AND GLOBAL STATES
+    * ==========================
+    */
    const { user } = useContext(AuthContext);
 
+   //Extract Necessary Attributes From Authenticated User
    let firstName, lastName, userName, profileImage;
-
    if (user) {
       ({ firstName, lastName, userName, profileImage } = user);
    }
+
+   /**
+    *  ==========================
+    *  Local States
+    *  ========================
+    */
    const [currImage, setCurrImage] = useState(img);
    const [modalOpen, setModalOpen] = useState("");
 
+   //Set Profile Image
    useEffect(() => {
       if (profileImage) {
          setCurrImage(profileImage);
       }
    }, [user]);
 
+   //On-Click To Allow User To Edit Profile
    const onClick = () => {
       setModalOpen(true);
    };
 
+   //Return Renderable JSX (if user truthy value)
    return user ? (
       <div className="flex space-x-6">
          {currImage && (
@@ -46,7 +65,7 @@ const ProfileBrief = (props) => {
          </div>
          <UserProfile
             modalOpen={modalOpen}
-            onClose={() => setModalOpen(false)}
+            onClose={() => setModalOpen(false)} //edit user profile information
          />
       </div>
    ) : (

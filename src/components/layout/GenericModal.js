@@ -1,9 +1,19 @@
 import React from "react";
 
+/**
+ * Generic Modal for Confirming An Action
+ *
+ * @param {boolean} isOpen - determines if we should display the modal
+ * @param {function} onClose - function to close the modal
+ * @param {string} title - title of the modal
+ * @param {content} content - message to display
+ * @param {function} onConfirm - function for confirming action
+ *
+ * @returns modal
+ */
 const GenericModal = ({ isOpen, onClose, title, content, onConfirm }) => {
-   if (!isOpen) return null;
-
-   return (
+   //return renderable JSX
+   return !isOpen ? null : (
       <div className="fixed inset-0 flex items-center justify-center z-50">
          <div className=" bg-white p-8 rounded shadow-lg">
             <div className="flex justify-between items-center mb-4">
