@@ -75,6 +75,7 @@ const UserProfile = ({ modalOpen, onClose }) => {
       }
    }, [updateError]);
 
+   //On Submit For Updating A Users Profile
    const onSubmit = (e) => {
       e.preventDefault();
       let names = updates.name.split(" ");

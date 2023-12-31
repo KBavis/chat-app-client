@@ -11,6 +11,10 @@ import AlertState from "./context/alert/AlertState";
 import Alerts from "./components/alert/Alert";
 import UserState from "./context/users/UserState";
 
+/**
+ *
+ * @returns Main App Component
+ */
 const App = () => {
    return (
       <AlertState>
