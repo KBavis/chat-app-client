@@ -1,7 +1,5 @@
 import {
    SEND_MESSAGE,
-   FILTER_MESSAGES,
-   DELETE_MESSAGE,
    GET_MESSAGES,
    CLEAR_MESSAGES,
    MESSAGE_ERROR,
@@ -9,10 +7,14 @@ import {
    RECIEVE_MESSAGE,
 } from "./types";
 
+/**
+ * Message Reducer for State Updates
+ */
 export default (state, action) => {
    switch (action.type) {
-      case SEND_MESSAGE:
+      case SEND_MESSAGE: //sending a speicifc message
          if (state.messages) {
+            //determine if messages have been sent previously
             return {
                ...state,
                messages: [...state.messages, action.payload],
@@ -23,7 +25,7 @@ export default (state, action) => {
                messages: [action.payload],
             };
          }
-      case GET_MESSAGES:
+      case GET_MESSAGES: //fetch user specific message
          return {
             ...state,
             messages: action.payload,
@@ -36,7 +38,7 @@ export default (state, action) => {
             current: null,
             messages: null,
          };
-      case RECIEVE_MESSAGE:
+      case RECIEVE_MESSAGE: //recieving a new message
          return {
             ...state,
             messages: [...state.messages, action.payload],

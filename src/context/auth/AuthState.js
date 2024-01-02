@@ -18,6 +18,12 @@ import {
 } from "./types";
 import AlertContext from "../alert/alertContext";
 
+/**
+ * Global Authentication State
+ *
+ * @param {props} props
+ * @returns
+ */
 const AuthState = (props) => {
    const initalState = {
       token: null,
@@ -28,11 +34,11 @@ const AuthState = (props) => {
       updateError: null,
    };
 
-   const [state, dispatch] = useReducer(authReducer, initalState);
+   const [state, dispatch] = useReducer(authReducer, initalState); //utilize reducer
 
-   const { setAlert } = useContext(AlertContext);
+   const { setAlert } = useContext(AlertContext); //utilize alerts for success/failure
 
-   // Load User
+   // Load User into state
    const loadUser = async () => {
       if (localStorage.token) {
          setAuthToken(localStorage.token);
@@ -41,7 +47,7 @@ const AuthState = (props) => {
       try {
          const res = await axios.get("/users/load");
          const data = res.data;
-         const { user_id, userName, firstName, lastName, profileImage } = data;
+         const { user_id, userName, firstName, lastName, profileImage } = data; //extract relevant data from user
          const user =
             profileImage == null
                ? {
@@ -49,7 +55,7 @@ const AuthState = (props) => {
                     userName,
                     firstName,
                     lastName,
-                    profileImage: one,
+                    profileImage: one, //set profile image to default if there isn't one set
                  }
                : {
                     user_id,
@@ -67,7 +73,7 @@ const AuthState = (props) => {
       }
    };
 
-   // Register User
+   // Register User To Our Application
    const register = async (formData) => {
       const config = {
          headers: {
@@ -75,7 +81,7 @@ const AuthState = (props) => {
          },
       };
       try {
-         removeAuthToken();
+         removeAuthToken(); //ensure there is no JWT token in storage prior to hitting endpoint
          const res = await axios.post("/auth/register", formData, config);
 
          dispatch({
@@ -100,7 +106,7 @@ const AuthState = (props) => {
       };
 
       try {
-         removeAuthToken();
+         removeAuthToken(); //ensure there is no JWT token in storage prior to hitting endpoint
          const res = await axios.post("/auth/authenticate", formData, config);
          dispatch({
             type: LOGIN_SUCCESS,
@@ -122,6 +128,7 @@ const AuthState = (props) => {
          },
       };
 
+      //config for updating our image
       const imageConfig = {
          headers: {
             "Content-Type": "multipart/form-data",
@@ -141,11 +148,11 @@ const AuthState = (props) => {
             data.append("file", imageFile);
 
             //Upload Image
-            const res = await axios.post("/file/upload", data, imageConfig);
+            await axios.post("/file/upload", data, imageConfig);
          }
 
          //Update Username & Name
-         const res = await axios.put(`/users/${id}`, formData, userConfig);
+         await axios.put(`/users/${id}`, formData, userConfig);
 
          //Reload User
          loadUser();
@@ -167,6 +174,9 @@ const AuthState = (props) => {
    //Clear Errors
    const clearErrors = () => dispatch({ type: CLEAR_ERRORS });
 
+   /**
+    * Return Auth Global Provider
+    */
    return (
       <AuthContext.Provider
          value={{

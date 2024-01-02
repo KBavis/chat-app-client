@@ -1,30 +1,27 @@
-import {
-   GET_USER,
-   GET_USERS,
-   USER_ERROR,
-   FILTER_USERS,
-   CLEAR_FILTER,
-} from "./types";
+import { GET_USERS, USER_ERROR, FILTER_USERS, CLEAR_FILTER } from "./types";
 
+/**
+ * Reducer for Users State
+ */
 export default (state, action) => {
    switch (action.type) {
-      case GET_USERS:
+      case GET_USERS: //fetch all registered users
          return {
             ...state,
             users: action.payload,
             loading: false,
          };
-      case USER_ERROR:
+      case USER_ERROR: //error regarding users
          return {
             ...state,
             error: action.payload,
          };
-      case CLEAR_FILTER:
+      case CLEAR_FILTER: //clear filter of user
          return {
             ...state,
             filtered: null,
          };
-      case FILTER_USERS:
+      case FILTER_USERS: //filter all possible users
          return {
             ...state,
             filtered: state.users.filter((user) => {

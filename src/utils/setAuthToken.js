@@ -1,5 +1,10 @@
 import axios from "axios";
 
+/**
+ * Add JWT Token To 'Authorization' Header
+ *
+ * @param {string} token
+ */
 const setAuthToken = (token) => {
    try {
       if (token) {

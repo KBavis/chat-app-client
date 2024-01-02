@@ -21,13 +21,12 @@ import {
    LEAVE_CONVERSATION,
    ADD_CONVERSATION,
    PIN_CONVERSATION,
-   RECIEVE_MESSAGE,
    SET_RECENT_CONVERSATION,
    SET_RECENT_MESSAGE,
-   DAY_DIFFERENCE,
 } from "./types";
 import { ADD_USER } from "../users/types";
 const ConversationsState = (props) => {
+   //init converastion state
    const initalState = {
       conversations: null,
       current: null,
@@ -38,9 +37,7 @@ const ConversationsState = (props) => {
       recent: null,
    };
 
-   const [state, dispatch] = useReducer(conversationReducer, initalState);
-
-   //Add Conversation
+   const [state, dispatch] = useReducer(conversationReducer, initalState); //utilize reducer
 
    //Delete/Leave Conversation
    const leaveConversation = async (id) => {
@@ -117,8 +114,6 @@ const ConversationsState = (props) => {
       dispatch({ type: CLEAR_CURRENT });
    };
 
-   //Update Conversation
-
    //Filter Conversations
    const filterConversations = (text) => {
       dispatch({ type: FILTER_CONVERSATIONS, payload: text });
@@ -143,7 +138,7 @@ const ConversationsState = (props) => {
    const createConversation = async (id) => {
       try {
          if (localStorage.token) {
-            setAuthToken(localStorage.token);
+            setAuthToken(localStorage.token); //authenticated endpoint (ensure JWT exists )
          }
          const res = await axios.post(`/conversations/${id}`);
          dispatch({
@@ -207,6 +202,7 @@ const ConversationsState = (props) => {
       }
    };
 
+   //return global conversations provider
    return (
       <ConversationsContext.Provider
          value={{

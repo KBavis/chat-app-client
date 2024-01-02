@@ -1,3 +1,6 @@
+/**
+ * Dispatch Types to Reducer
+ */
 export const ADD_CONVERSATION = "ADD_CONVERSATION";
 export const LEAVE_CONVERSATION = "LEAVE_CONVERSATION";
 export const GET_USER_CONVERSATIONS = "GET_USER_CONVERSATIONS";

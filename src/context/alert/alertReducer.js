@@ -1,5 +1,8 @@
 import { REMOVE_ALERT, SET_ALERT } from "./types";
 
+/**
+ * Alert Reducer
+ */
 export default (state, action) => {
    switch (action.type) {
       case SET_ALERT:
