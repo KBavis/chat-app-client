@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+   zookeeper:
+      image: wurstmeister/zookeeper
+      container_name: zookeeper
+      ports:
+         - "2181:2181"
+      #all services should running on bridge network
+      network_mode: bridge
+
+   kafka:
+      image: wurstmeister/kafka
+      container_name: kafka
+      network_mode: bridge
+      ports:
+         - "9092:9092"
+      environment:
+         HOSTNAME_COMMAND: "ifconfig eth0 | awk '/inet / {print $$2}'"
+         #connect to bridge IP address
+         KAFKA_ZOOKEEPER_CONNECT: 172.17.0.1:2181
+         # KAFKA_ADVERTISED_PORT: 9092
+         KAFKA_CREATE_TOPICS: messages:1:1
+      depends_on:
+         - zookeeper
+
+   postgres:
+      image: postgres
+      container_name: postgres
+      ports:
+         - "5432:5432"
+      environment:
+         POSTGRES_DB: chat-app
+         POSTGRES_USER: postgres
+         POSTGRES_PASSWORD: AndrewLuck626!
+      volumes:
+         - C:\pg_volume:/var/lib/postgresql/data
+      restart: always
+      network_mode: bridge
+
+   spring-boot-app:
+      image: api-image:latest
+      container_name: spring-boot-container
+      ports:
+         - "8080:8080"
+      depends_on:
+         - postgres
+         - zookeeper
+         - kafka
+      restart: always
+      network_mode: bridge
+
+   react-app:
+      image: client-image:latest
+      container_name: react-client-container
+      ports:
+         - "3000:3000"
+      stdin_open: true
+      tty: true
+      network_mode: bridge
+      depends_on:
+         - zookeeper
+         - postgres
+         - kafka
+         - spring-boot-app
