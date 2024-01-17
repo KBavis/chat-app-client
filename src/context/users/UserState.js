@@ -4,6 +4,7 @@ import userReducer from "./userReducer";
 import UserContext from "./userContext";
 import setAuthToken from "../../utils/setAuthToken";
 import axios from "axios";
+import apiUrl from "../../utils/config";
 
 const UserState = (props) => {
    const initialState = {
@@ -21,7 +22,7 @@ const UserState = (props) => {
             //ensuere JWT token set (auth endpoint )
             setAuthToken(localStorage.token);
          }
-         const res = await axios.get("/users");
+         const res = await axios.get(`${apiUrl}/users`);
          const payloadData = res.data._embedded
             ? res.data._embedded.userResponseDTOes
             : null;

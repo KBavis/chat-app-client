@@ -12,6 +12,7 @@ import {
    RECIEVE_MESSAGE,
 } from "./types";
 import AuthContext from "../auth/authContext";
+import apiUrl from "../../utils/config";
 
 const MessageState = (props) => {
    //inital message state
@@ -37,7 +38,11 @@ const MessageState = (props) => {
             //auth endpoint, ensure that JWT token set
             setAuthToken(localStorage.token);
          }
-         const res = await axios.post(`/messages/${convoId}`, message, config);
+         const res = await axios.post(
+            `${apiUrl}/messages/${convoId}`,
+            message,
+            config
+         );
          dispatch({
             type: SEND_MESSAGE,
             payload: res.data,
@@ -58,7 +63,9 @@ const MessageState = (props) => {
             //auth endpoint, so ensure that Authentication token set
             setAuthToken(localStorage.token);
          }
-         const res = await axios.get(`/messages/conversations/${convoId}`);
+         const res = await axios.get(
+            `${apiUrl}/messages/conversations/${convoId}`
+         );
          const payloadData = res.data._embedded
             ? res.data._embedded.messageResponseDTOes
             : null;

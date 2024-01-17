@@ -25,6 +25,7 @@ import {
    SET_RECENT_MESSAGE,
 } from "./types";
 import { ADD_USER } from "../users/types";
+import apiUrl from "../../utils/config";
 const ConversationsState = (props) => {
    //init converastion state
    const initalState = {
@@ -45,7 +46,7 @@ const ConversationsState = (props) => {
          if (localStorage.token) {
             setAuthToken(localStorage.token);
          }
-         await axios.delete(`/conversation/leave/${id}`);
+         await axios.delete(`${apiUrl}/conversation/leave/${id}`);
          dispatch({
             type: LEAVE_CONVERSATION,
             payload: id,
@@ -66,7 +67,7 @@ const ConversationsState = (props) => {
             setAuthToken(localStorage.token);
          }
          const res = await axios.put(
-            `/conversations/${conversation_id}/${user_id}`
+            `${apiUrl}/conversations/${conversation_id}/${user_id}`
          );
          dispatch({
             type: ADD_USER,
@@ -87,7 +88,7 @@ const ConversationsState = (props) => {
          if (localStorage.token) {
             setAuthToken(localStorage.token);
          }
-         const res = await axios.get("/userConversations");
+         const res = await axios.get(`${apiUrl}/userConversations`);
          const payloadData = res.data._embedded
             ? res.data._embedded.conversationResponseDTOes
             : null;
@@ -140,7 +141,7 @@ const ConversationsState = (props) => {
          if (localStorage.token) {
             setAuthToken(localStorage.token); //authenticated endpoint (ensure JWT exists )
          }
-         const res = await axios.post(`/conversations/${id}`);
+         const res = await axios.post(`${apiUrl}/conversations/${id}`);
          dispatch({
             type: ADD_CONVERSATION,
             payload: res.data,

@@ -40,7 +40,7 @@ services:
 
    spring-boot-app:
       image: api-image:latest
-      container_name: spring-boot-container
+      container_name: spring-boot-app
       ports:
          - "8080:8080"
       depends_on:

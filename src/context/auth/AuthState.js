@@ -5,6 +5,7 @@ import axios from "axios";
 import setAuthToken from "../../utils/setAuthToken";
 import removeAuthToken from "../../utils/removeAuthToken";
 import one from "../../images/default.jpg";
+import apiUrl from "../../utils/config";
 import {
    REGISTER_SUCCESS,
    REGISTER_FAIL,
@@ -45,7 +46,7 @@ const AuthState = (props) => {
       }
 
       try {
-         const res = await axios.get("/users/load");
+         const res = await axios.get(`${apiUrl}/users/load`);
          const data = res.data;
          const { user_id, userName, firstName, lastName, profileImage } = data; //extract relevant data from user
          const user =
@@ -82,7 +83,11 @@ const AuthState = (props) => {
       };
       try {
          removeAuthToken(); //ensure there is no JWT token in storage prior to hitting endpoint
-         const res = await axios.post("/auth/register", formData, config);
+         const res = await axios.post(
+            `${apiUrl}/auth/register`,
+            formData,
+            config
+         );
 
          dispatch({
             type: REGISTER_SUCCESS,
@@ -107,7 +112,11 @@ const AuthState = (props) => {
 
       try {
          removeAuthToken(); //ensure there is no JWT token in storage prior to hitting endpoint
-         const res = await axios.post("/auth/authenticate", formData, config);
+         const res = await axios.post(
+            `${apiUrl}/auth/authenticate`,
+            formData,
+            config
+         );
          dispatch({
             type: LOGIN_SUCCESS,
             payload: res.data,
@@ -148,11 +157,11 @@ const AuthState = (props) => {
             data.append("file", imageFile);
 
             //Upload Image
-            await axios.post("/file/upload", data, imageConfig);
+            await axios.post(`${apiUrl}/file/upload`, data, imageConfig);
          }
 
          //Update Username & Name
-         await axios.put(`/users/${id}`, formData, userConfig);
+         await axios.put(`${apiUrl}/users/${id}`, formData, userConfig);
 
          //Reload User
          loadUser();
