@@ -33,6 +33,7 @@ services:
          POSTGRES_DB: chat-app
          POSTGRES_USER: postgres
          POSTGRES_PASSWORD: AndrewLuck626!
+      #note: this was change from C:\pg_volume: following setting up of ec2 instance
       volumes:
          - C:\pg_volume:/var/lib/postgresql/data
       restart: always

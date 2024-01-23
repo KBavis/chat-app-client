@@ -16,6 +16,7 @@ const Home = () => {
    useEffect(() => {
       //If There Is A Token In Storage, Try And Load User's Infomration
       if (localStorage.token) {
+         console.log(localStorage.token.length);
          loadUser();
       } else {
          removeAuthToken();
