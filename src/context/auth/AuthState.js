@@ -101,7 +101,6 @@ const AuthState = (props) => {
          });
       }
    };
-
    //Login User
    const loginUser = async (formData) => {
       const config = {
