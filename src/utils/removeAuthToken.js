@@ -1,5 +1,10 @@
 import axios from "axios";
 
+/**
+ * Remove JWT Authentication Token from Headers
+ *
+ * @param {string} token
+ */
 const removeAuthToken = (token) => {
    try {
       if (localStorage.token) {

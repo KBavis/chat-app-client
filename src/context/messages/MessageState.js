@@ -3,11 +3,8 @@ import messageReducer from "./messageReducer";
 import MessageContext from "./messageContext";
 import setAuthToken from "../../utils/setAuthToken";
 import axios from "axios";
-import ConversationsContext from "../conversations/conversationContext";
 import {
    SEND_MESSAGE,
-   DELETE_MESSAGE,
-   FILTER_MESSAGES,
    CLEAR_MESSAGES,
    GET_MESSAGES,
    MESSAGE_ERROR,
@@ -15,8 +12,10 @@ import {
    RECIEVE_MESSAGE,
 } from "./types";
 import AuthContext from "../auth/authContext";
+import apiUrl from "../../utils/config";
 
 const MessageState = (props) => {
+   //inital message state
    const initalState = {
       messages: [],
       loading: false,
@@ -25,7 +24,7 @@ const MessageState = (props) => {
 
    const { user } = useContext(AuthContext);
 
-   const [state, dispatch] = useReducer(messageReducer, initalState);
+   const [state, dispatch] = useReducer(messageReducer, initalState); //utilize reducer for state updates
 
    //Send Message
    const sendMessage = async (message, convoId) => {
@@ -36,9 +35,14 @@ const MessageState = (props) => {
             },
          };
          if (localStorage.token) {
+            //auth endpoint, ensure that JWT token set
             setAuthToken(localStorage.token);
          }
-         const res = await axios.post(`/messages/${convoId}`, message, config);
+         const res = await axios.post(
+            `${apiUrl}/messages/${convoId}`,
+            message,
+            config
+         );
          dispatch({
             type: SEND_MESSAGE,
             payload: res.data,
@@ -56,9 +60,12 @@ const MessageState = (props) => {
    const getMessages = async (convoId) => {
       try {
          if (localStorage.token) {
+            //auth endpoint, so ensure that Authentication token set
             setAuthToken(localStorage.token);
          }
-         const res = await axios.get(`/messages/conversations/${convoId}`);
+         const res = await axios.get(
+            `${apiUrl}/messages/conversations/${convoId}`
+         );
          const payloadData = res.data._embedded
             ? res.data._embedded.messageResponseDTOes
             : null;
@@ -89,18 +96,6 @@ const MessageState = (props) => {
       }
    };
 
-   //Delete Message
-
-   //Edit Message
-
-   //Filter Messages
-
-   //Clear Filter
-
-   //Set Current
-
-   //Clear Curent
-
    //Clear Messages
    const clearMessages = () => {
       dispatch({ type: CLEAR_MESSAGES });
@@ -113,6 +108,7 @@ const MessageState = (props) => {
       });
    };
 
+   //return Global Context Provider
    return (
       <MessageContext.Provider
          value={{

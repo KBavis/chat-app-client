@@ -21,13 +21,13 @@ import {
    LEAVE_CONVERSATION,
    ADD_CONVERSATION,
    PIN_CONVERSATION,
-   RECIEVE_MESSAGE,
    SET_RECENT_CONVERSATION,
    SET_RECENT_MESSAGE,
-   DAY_DIFFERENCE,
 } from "./types";
 import { ADD_USER } from "../users/types";
+import apiUrl from "../../utils/config";
 const ConversationsState = (props) => {
+   //init converastion state
    const initalState = {
       conversations: null,
       current: null,
@@ -38,9 +38,7 @@ const ConversationsState = (props) => {
       recent: null,
    };
 
-   const [state, dispatch] = useReducer(conversationReducer, initalState);
-
-   //Add Conversation
+   const [state, dispatch] = useReducer(conversationReducer, initalState); //utilize reducer
 
    //Delete/Leave Conversation
    const leaveConversation = async (id) => {
@@ -48,7 +46,7 @@ const ConversationsState = (props) => {
          if (localStorage.token) {
             setAuthToken(localStorage.token);
          }
-         await axios.delete(`/conversation/leave/${id}`);
+         await axios.delete(`${apiUrl}/conversation/leave/${id}`);
          dispatch({
             type: LEAVE_CONVERSATION,
             payload: id,
@@ -69,7 +67,7 @@ const ConversationsState = (props) => {
             setAuthToken(localStorage.token);
          }
          const res = await axios.put(
-            `/conversations/${conversation_id}/${user_id}`
+            `${apiUrl}/conversations/${conversation_id}/${user_id}`
          );
          dispatch({
             type: ADD_USER,
@@ -90,7 +88,7 @@ const ConversationsState = (props) => {
          if (localStorage.token) {
             setAuthToken(localStorage.token);
          }
-         const res = await axios.get("/userConversations");
+         const res = await axios.get(`${apiUrl}/userConversations`);
          const payloadData = res.data._embedded
             ? res.data._embedded.conversationResponseDTOes
             : null;
@@ -117,8 +115,6 @@ const ConversationsState = (props) => {
       dispatch({ type: CLEAR_CURRENT });
    };
 
-   //Update Conversation
-
    //Filter Conversations
    const filterConversations = (text) => {
       dispatch({ type: FILTER_CONVERSATIONS, payload: text });
@@ -143,9 +139,9 @@ const ConversationsState = (props) => {
    const createConversation = async (id) => {
       try {
          if (localStorage.token) {
-            setAuthToken(localStorage.token);
+            setAuthToken(localStorage.token); //authenticated endpoint (ensure JWT exists )
          }
-         const res = await axios.post(`/conversations/${id}`);
+         const res = await axios.post(`${apiUrl}/conversations/${id}`);
          dispatch({
             type: ADD_CONVERSATION,
             payload: res.data,
@@ -207,6 +203,7 @@ const ConversationsState = (props) => {
       }
    };
 
+   //return global conversations provider
    return (
       <ConversationsContext.Provider
          value={{

@@ -1,3 +1,7 @@
+/**
+ * Alert Context
+ */
+
 import { createContext } from "react";
 
 const AlertContext = createContext();

@@ -1,3 +1,6 @@
+/**
+ * Conversations Context
+ */
 import { createContext } from "react";
 
 const ConversationsContext = createContext();

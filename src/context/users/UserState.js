@@ -1,15 +1,10 @@
-import {
-   GET_USER,
-   GET_USERS,
-   USER_ERROR,
-   FILTER_USERS,
-   CLEAR_FILTER,
-} from "./types";
+import { GET_USERS, USER_ERROR, FILTER_USERS, CLEAR_FILTER } from "./types";
 import { useReducer, useContext } from "react";
 import userReducer from "./userReducer";
 import UserContext from "./userContext";
 import setAuthToken from "../../utils/setAuthToken";
 import axios from "axios";
+import apiUrl from "../../utils/config";
 
 const UserState = (props) => {
    const initialState = {
@@ -24,9 +19,10 @@ const UserState = (props) => {
    const getUsers = async () => {
       try {
          if (localStorage.token) {
+            //ensuere JWT token set (auth endpoint )
             setAuthToken(localStorage.token);
          }
-         const res = await axios.get("/users");
+         const res = await axios.get(`${apiUrl}/users`);
          const payloadData = res.data._embedded
             ? res.data._embedded.userResponseDTOes
             : null;
@@ -53,6 +49,9 @@ const UserState = (props) => {
       dispatch({ type: CLEAR_FILTER });
    };
 
+   /**
+    * Return Global Users Provider
+    */
    return (
       <UserContext.Provider
          value={{

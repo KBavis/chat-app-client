@@ -1,4 +1,3 @@
-import { act } from "react-dom/test-utils";
 import {
    CLEAR_FILTER,
    FILTER_CONVERSATIONS,
@@ -17,9 +16,12 @@ import {
    SET_RECENT_MESSAGE,
 } from "./types";
 
+/**
+ * Conversation Reducer
+ */
 export default (state, action) => {
    switch (action.type) {
-      case FILTER_CONVERSATIONS:
+      case FILTER_CONVERSATIONS: //filter conversations
          return {
             ...state,
             filtered: state.conversations.filter((convo) => {
@@ -36,7 +38,7 @@ export default (state, action) => {
                return false;
             }),
          };
-      case LEAVE_CONVERSATION:
+      case LEAVE_CONVERSATION: //user attempts to leave conversation
          return {
             ...state,
             conversations: state.conversations.filter(
@@ -46,8 +48,9 @@ export default (state, action) => {
             loading: false,
             current: null,
          };
-      case ADD_CONVERSATION:
+      case ADD_CONVERSATION: //creating a conversation
          if (state.conversations) {
+            //if conversations exists
             return {
                ...state,
                conversations: [action.payload, ...state.conversations],
@@ -61,24 +64,24 @@ export default (state, action) => {
             };
          }
       case GET_USER_CONVERSATIONS:
-      case RECIEVE_MESSAGE:
+      case RECIEVE_MESSAGE: //fetching specific conversations or recieving a new message
          return {
             ...state,
             conversations: action.payload,
             loading: false,
          };
-      case ADD_USER:
+      case ADD_USER: //adding user to conversation
          return {
             ...state,
             current: action.payload,
             loading: false,
          };
-      case CLEAR_FILTER:
+      case CLEAR_FILTER: //remove filter
          return {
             ...state,
             filtered: null,
          };
-      case SET_CURRENT:
+      case SET_CURRENT: //update conversation in view
          return {
             ...state,
             current: action.payload,
@@ -88,12 +91,12 @@ export default (state, action) => {
             ...state,
             current: null,
          };
-      case SET_LOADING:
+      case SET_LOADING: //indicate we are fetching data
          return {
             ...state,
             loading: true,
          };
-      case PIN_CONVERSATION:
+      case PIN_CONVERSATION: //pin a single conversation at the top of list of conversations
          const pinnedConversation = state.conversations.find(
             (convo) => convo.conversation_id === action.payload
          );
@@ -107,7 +110,7 @@ export default (state, action) => {
             conversations: [pinnedConversation, ...filteredConversations],
             pinned: action.payload,
          };
-      case CLEAR_CONVERSATIONS:
+      case CLEAR_CONVERSATIONS: //clear conversations (for logging out )
          return {
             ...state,
             conversations: null,
@@ -116,12 +119,12 @@ export default (state, action) => {
             recent: null,
             recentConversation: null,
          };
-      case SET_RECENT_CONVERSATION:
+      case SET_RECENT_CONVERSATION: //setting recent conversation (in which message was just sent)
          return {
             ...state,
             recentConversation: action.payload,
          };
-      case SET_RECENT_MESSAGE:
+      case SET_RECENT_MESSAGE: //setting recent message received (wherever message was just sent )
          return {
             ...state,
             recent: action.payload,

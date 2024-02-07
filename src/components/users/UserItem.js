@@ -1,22 +1,35 @@
 import React, { useEffect, useContext, useState } from "react";
 import img from "../../images/default.jpg";
-import UserContext from "../../context/users/userContext";
 import ConversationsContext from "../../context/conversations/conversationContext";
 import AlertContext from "../../context/alert/alertContext";
 
+/**
+ *
+ * @param {User} user - user the item is representing
+ * @param {function} onClose - closing of the AddUser or
+ * @param {boolean} isCreateConversation - determines whether this is for Creating a Conversation OR for Adding A User
+ * @param {function} setMenuOpen - opens menu
+ * @returns
+ */
 const UserItem = ({ user, onClose, isCreateConversation, setMenuOpen }) => {
-   const { profileImage } = user;
-   const {
-      createConversation,
-      error,
-      current,
-      addUser,
-      setCurrent,
-      conversations,
-   } = useContext(ConversationsContext);
-   const [currImage, setCurrImage] = useState("");
+   /**
+    * =========================
+    * CONTEXT AND GLOBAL STATES
+    * ========================
+    */
+   const { createConversation, error, current, addUser } =
+      useContext(ConversationsContext);
    const { setAlert } = useContext(AlertContext);
 
+   /**
+    * =========================
+    * LOCAL STATES
+    * ========================
+    */
+   const [currImage, setCurrImage] = useState("");
+   const { profileImage } = user; //extract profile image from passed in user
+
+   //Sets The Profile Image Upon Component Mounting
    useEffect(() => {
       if (profileImage == null) {
          setCurrImage(img);
@@ -25,27 +38,29 @@ const UserItem = ({ user, onClose, isCreateConversation, setMenuOpen }) => {
       }
    }, []);
 
+   //On Click For Creating A Converastion or Adding A User
    const onClick = async () => {
       if (isCreateConversation) {
-         await createConversation(user.user_id);
+         await createConversation(user.user_id); //create conversation in backend
          if (error) {
             setAlert(error.msg, "danger");
          } else {
             setAlert("Conversation successfully created", "success");
          }
-         onClose();
+         onClose(); //close modal
       } else {
-         addUser(current.conversation_id, user.user_id);
+         addUser(current.conversation_id, user.user_id); //add user to conversation in backend
          if (error) {
             setAlert(error.msg, "danger");
          } else {
             setAlert("User succesfully added to conversation", "success");
          }
          setMenuOpen(false);
-         onClose();
+         onClose(); //close modal
       }
    };
 
+   //return renderable JSX
    return (
       <div
          onClick={onClick}
