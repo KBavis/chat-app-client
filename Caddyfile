@@ -1,5 +1,4 @@
-ec2-3-90-160-1.compute-1.amazonaws.com {
-   reverse_proxy react-app:3000
-}
+:80
 
+reverse_proxy react-app:3000
 
