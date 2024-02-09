@@ -1,71 +1,56 @@
-# Getting Started with Create React App
+Chit-Chat (React Frontend) 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+The purpose of this application is to display a proper UI for our Chit-Chat application. This application works in conjunction with Chit-Chat's REST API (https://github.com/KBavis/chat-app-api.git) to allow users to register accounts, generate conversations with other users, and then chat with one and other. The frontend utilizes React in order to generate the necessary componenents needed to display our UI and to manage the relatively striaight forward state needed more a session. In order to manage our application's state and pass data through a React component tree, our React Frontend utilizes React Context API. This allows for our application to effectively manage our global state management and avoid prop drilling, while also optimizing our performance. 
 
-## Available Scripts
+Working with the Front-end has never been necesarily my 'area of expertise'. It's an area that has always interested me and so I figured (as with everything software engineering related), the best way to learn is to go and build something! With that being said, I faced a hefty amount of challeneges throughout my Front-End development work (including some issues that are still present). 1) Managing State Effectively. This was my first take on utilizing React's Context API after reading a bit into the best way to apply the practice to an application. I initally attempted to break this state down by Entity, but realized quickly there would be some issues along the way. On top of this, I ran into some issues handling state when a user was 'recieving a message'. All messages are stored within a Postgres Database, however, I wanted to implement "real-time functionality" utilziing web-sockets. This proved to be a bit of challenge when it came to displaying the recieved message sent over the web-sockets since the user must essentially be listening on all web-sockets, and then the recieved message needs to properly be assinged to proper Conversation and appear instantly. 2) Memory Management. This was an area that I haven't dealt with too much in the past, but allowed me to dive into some of inner-working of memory and how to manage it in the best way possible. The issue was that I initally had my Front-End and Back-End running on the same EC2 Instnace. This ended up exhausting the memory allocated by the EC2 instnance and causing the application to crash. I worked around this issue by simply creating a seperate EC2 Instance for my front-end, which resolved the problem (well, temporarily --- see 'TO-DO' Section Below).
 
-In the project directory, you can run:
 
-### `npm start`
+In order to install the application and run the project, please do the following:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+-----------BACKEND SETUP--------------
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+1) Clone The API repoistory (https://github.com/KBavis/chat-app-api.git) to your local machine.
 
-### `npm test`
+2) Update your local copy of the API as follows :
+	- Create an application.properties (see the template application.propeties file for example set-up)
+	- Run 'mvn clean install -DskipTests' to generate the .jar file needed 
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+3) Build your API Docker Image 
+	- Ensure that the 'Dockerfile' is referencing the correct location of your .jar file and the proper name 
+	- Run the command 'docker build -t api-image:latest .' while in the working directy of your Docker Image and Target Directory (where your .jar should be located)
 
-### `npm run build`
+4) Update Your Docker Compose File
+	- Update KAFKA_ZOOKEEPER_CONNECT host domain (this should be the IPV4 Address of the 'bridge' network --> run 'docker inspect network bridge' to determine
+	- Update KAFKA_ADVERTISED_LISTENERS host domain (if running locally, this should be localhost)
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+5) Run Docker-Compose File
+	- Execute the command 'docker-compose up -d' in the working directory of your docker-compose.yml file 
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+----------FRONTEND SETUP---------------
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+1) Clone the Frontend Repository (https://github.com/KBavis/chat-app-client.git) to your local machine.
 
-### `npm run eject`
+2) Update conifg.js host domain to be 'localhost'
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3) If attempting to run locally, there is no need to utilize the dokcer-compose.yml file (as this serves as a reverse proxy for our EC2 Instance), so simply build your docker image via the following commnad:
+	- docker build -t client-image:latest . 
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+4) Run the docker image :
+	'docker run -p 3000:3000 client-image:latest'
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+5) Access the login page by going to http://localhost:3000 
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+TO-DO
+The functionality of the project has been able to do as I wanted, but there are some points that I want to consider for the future if I revisit this project.
+	1) Responsive Design - as of now, this application was created to simply serve as a web application. In the futurre, I would love for this application to be accessible via a phone. This shouldn't be much of change 		needed due to the ease of use by tailwind with their breakpoints. 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+	2) Memory Allocation on EC2 Instance. I have the application not currently running on the EC2 Instance as a result of memory problems. The amount of memory on the free-tier of the EC2 Instance is limted, and as a 		result, the resources become exhausted after a couple hours of up-time. This fix is simply just to migrate to a larger version of an EC2 Instnace, but due to this project being more for learning purposes, I don	     't see the need to break the bank to just always keep the application running. I was able to confirm that when the application does run, users are able to create accounts, create group conversation or one-on-on		  e conversations, and then have a seemless chat experience with real-time functionality. This was the main reason I wanted to deploy the application in first place!
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+	3) HTTPS Configuration. As of now, the application is confiugred to run on HTTP, but, to have SSL, this should be on HTTPS. I honestly think this change is extremely straight forward (i.e change the Caddy file fro		m running on Port 80 to running on Port 443. I may get to this sooner rather than later (for learning purposes), so this may be disregarded if fixed.
 
-### Code Splitting
+	4) Real-Time Functionality. When a conversation is initally created, there is a small buffer peroid that must be waited for while the web-socket connection is attempting to be established. During this peroid, user		are unable to utilize the real-time functionality that works once it's been established. Due to this, I want to create a loading screen until its been establish, ensuring no messages are sent.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+	5) Styling. The icon on the tab is still the original React icon. This should be udpatd to be some Chit-Chat logo. On top of this, when a user recieves a message from another user that doesn't have a profile image		, the image will just say the alternate to profile image "profileImage". Instead, this should display the default user icon.
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
-# chat-app-client
